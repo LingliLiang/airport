@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="network">
+      <UniqueIdentifier>{31c778af-0def-47d3-b416-561629a67611}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="licenses">
+      <UniqueIdentifier>{7a17a737-6cca-4dc2-b269-9aec16f45976}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{844f9229-864f-4352-ab0d-26f82c963fa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sys">
+      <UniqueIdentifier>{8cf79f05-c068-4e26-89b4-b5f4b45b0ca1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{95aeb03c-1e1e-4563-ae85-b76fac6db7b0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AirDefines.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AirPlay.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="system.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sys\CriticalSection.h">
+      <Filter>sys</Filter>
+    </ClInclude>
+    <ClInclude Include="log\SimpleLog.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="log\XZip.h">
+      <Filter>log</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AirPlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="log\SimpleLog.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\XZip.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="log\usage.txt">
+      <Filter>log</Filter>
+    </None>
+  </ItemGroup>
+</Project>
