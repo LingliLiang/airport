@@ -25,8 +25,6 @@
 #include <utility>
 #include <vector>
 
-//#include "utils/Job.h"
-
 class CCriticalSection;
 /// this class provides support for zeroconf
 /// while the different zeroconf implementations have asynchronous APIs

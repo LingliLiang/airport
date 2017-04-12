@@ -20,16 +20,16 @@
 #pragma once
 
 #include "network/Zeroconf.h"
-#include "sys/CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include <dns_sd.h>
-#include "sys/Thread.h"
+//#include "threads/Thread.h"
 
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-class CZeroconfMDNS : public CZeroconf,public CThread
+class CZeroconfMDNS : public CZeroconf/*,public CThread*/
 {
 public:
   CZeroconfMDNS();

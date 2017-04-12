@@ -22,8 +22,8 @@
 
 #include <vector>
 
-#include "sys/Condition.h"
-#include "sys/SingleLock.h"
+#include "threads/Condition.h"
+#include "threads/SingleLock.h"
 
 // forward declare the CEventGroup
 namespace XbmcThreads

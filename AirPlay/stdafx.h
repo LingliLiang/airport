@@ -12,6 +12,11 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
+
+#if !defined(_WIN64)
+#define _USE_32BIT_TIME_T
+#endif
+
 #include <algorithm>
 // Windows м╥нд╪Ч:
 #include <windows.h>

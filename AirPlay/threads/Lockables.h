@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "sys/Helpers.h"
+#include "threads/Helpers.h"
 
 namespace XbmcThreads
 {

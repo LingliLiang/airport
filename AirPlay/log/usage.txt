@@ -2,15 +2,15 @@
 
 
 	/*log */
-	SPSTART_LOG; //程序开始时调用
-	SPDEBUG_LOG(_T("fsdfdsfgdsf1"));
-	SPINFO_LOG(_T("dsfdsfdsfdsfd2"));
-	SPERROR_LOG(_T("dsfsdfdsfddsf3"));
+	SPSTARTLOG; //程序开始时调用
+	SPLOGT(LOG_NAN,_T("fsdfdsfgdsf1"));
+	SPLOGT(LOG_INFO,_T("dsfdsfdsfdsfd2"));
+	SPLOGT(LOG_ERROR,_T("dsfsdfdsfddsf3"));
 	//线程测试
 	for(int i=0;i<7;i++)
 	{
 		HANDLE m_hThread = ::CreateThread(NULL, 0, test, (LPVOID)0, CREATE_SUSPENDED, 0 );
-		G_LOG.AddClientThreadHandle(m_hThread);
+		SPWAITTHREAD(m_hThread);
 		ResumeThread(m_hThread);
 	}
 	SPSTOP_LOG; //程序结束调用
@@ -18,11 +18,10 @@
 
  DWORD WINAPI test(LPVOID lpParam)
 {
-	SPDEBUG_LOG(_T("1"));
-	SPINFO_LOG(_T("2"));
-	SPERROR_LOG(_T("3"));
-	SPDEBUG_LOG(_T("4"));
-	SPINFO_LOG(_T("5"));
+	SPLOGT(LOG_NAN,_T("1"));
+	SPLOGT(LOG_INFO,_T("2"));
+	SPLOGT(LOG_ERROR,_T("3"));
+	SPLOGT(LOG_DEBUG,_T("4"));
 	return 0;
 }
 

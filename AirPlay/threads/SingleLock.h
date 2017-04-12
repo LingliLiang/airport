@@ -25,8 +25,8 @@
 
 #pragma once
 
-#include "sys/CriticalSection.h"
-#include "sys/Lockables.h"
+#include "threads/CriticalSection.h"
+#include "threads/Lockables.h"
 
 /**
  * This implements a "guard" pattern for a CCriticalSection that
@@ -65,12 +65,12 @@ public:
  * This class can be used on a CCriticalSection that isn't owned
  *  by this thread in which case it will do nothing.
  */
-class CSingleExit
-{
-  CCriticalSection& sec;
-  unsigned int count;
-public:
-  inline CSingleExit(CCriticalSection& cs) : sec(cs), count(cs.exit()) { }
-  inline ~CSingleExit() { sec.restore(count); }
-};
+//class CSingleExit
+//{
+//  CCriticalSection& sec;
+//  unsigned int count;
+//public:
+//  inline CSingleExit(CCriticalSection& cs) : sec(cs), count(cs.exit()) { }
+//  inline ~CSingleExit() { sec.restore(count); }
+//};
 

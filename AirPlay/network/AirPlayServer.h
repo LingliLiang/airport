@@ -28,17 +28,25 @@
 #include <map>
 #include <vector>
 #include <sys/socket.h>
-#include "sys/Thread.h"
-#include "sys/CriticalSection.h"
+//#include "threads/Thread.h"
+#include "threads/CriticalSection.h"
 #include "utils/HttpParser.h"
 #include "interfaces/IAnnouncer.h"
 
-class DllLibPlist;
 class CVariant;
 
 #define AIRPLAY_SERVER_VERSION_STR "101.28"
 
-class CAirPlayServer : public CThread, public ANNOUNCEMENT::IAnnouncer
+enum PlayListType
+{
+	PLAYLIST_NONE  =  -1,
+	PLAYLIST_MUSIC  = 0,
+	PLAYLIST_VIDEO  = 1,
+	PLAYLIST_PICTURE =2,
+	PLAYLIST_MIRROR =3
+};
+
+class CAirPlayServer : /*public CThread,*/ public ANNOUNCEMENT::IAnnouncer
 {
 public:
   // IAnnouncer IF
@@ -97,7 +105,7 @@ private:
     void Copy(const CTCPClient& client);
 
     HttpParser* m_httpParser;
-    DllLibPlist *m_pLibPlist;//the lib
+
     bool m_bAuthenticated;
     int  m_lastEvent;
     std::string m_authNonce;

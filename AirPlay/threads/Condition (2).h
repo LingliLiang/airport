@@ -20,8 +20,8 @@
 
 #pragma once
 
-#include "sys/SingleLock.h"
-#include "sys/Helpers.h"
+#include "threads/SingleLock.h"
+#include "threads/Helpers.h"
 
 #include <windows.h>
 

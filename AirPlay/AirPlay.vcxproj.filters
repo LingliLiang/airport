@@ -20,6 +20,12 @@
     <Filter Include="log">
       <UniqueIdentifier>{95aeb03c-1e1e-4563-ae85-b76fac6db7b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads">
+      <UniqueIdentifier>{3c87eb2b-1c61-4fdf-941b-4082837132aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{712644c5-2e8f-4f52-a15c-f0c59a1ab287}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AirDefines.h">
@@ -37,14 +43,32 @@
     <ClInclude Include="system.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="sys\CriticalSection.h">
-      <Filter>sys</Filter>
-    </ClInclude>
     <ClInclude Include="log\SimpleLog.h">
       <Filter>log</Filter>
     </ClInclude>
     <ClInclude Include="log\XZip.h">
       <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Zeroconf.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\ZeroconfMDNS.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\CriticalSection.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\Locks.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\StringConversion.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Variant.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\SystemClock.h">
+      <Filter>threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +86,21 @@
     </ClCompile>
     <ClCompile Include="log\XZip.cpp">
       <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Zeroconf.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\ZeroconfMDNS.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\StringConversion.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Variant.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\SystemClock.cpp">
+      <Filter>threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

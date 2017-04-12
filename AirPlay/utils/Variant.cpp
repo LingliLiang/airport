@@ -130,8 +130,8 @@ double str2double(const std::wstring &str, double fallback /* = 0.0 */)
 }
 
 CVariant::CVariant()
-  : CVariant(VariantTypeNull)
 {
+	CVariant::CVariant(VariantTypeNull);
 }
 
 CVariant CVariant::ConstNullVariant = CVariant::VariantTypeConstNull;
@@ -267,8 +267,11 @@ CVariant::CVariant(const std::vector<std::string> &strArray)
   m_type = VariantTypeArray;
   m_data.array = new VariantArray;
   m_data.array->reserve(strArray.size());
-  for (const auto& item : strArray)
-    m_data.array->push_back(CVariant(item));
+  for (int i = 0; i < strArray.size(); ++i)
+  {
+	  const auto& item = strArray[i];
+	  m_data.array->push_back(CVariant(item));
+  }
 }
 
 CVariant::CVariant(const std::map<std::string, std::string> &strMap)
@@ -811,13 +814,13 @@ CVariant::const_iterator_map CVariant::end_map() const
 unsigned int CVariant::size() const
 {
   if (m_type == VariantTypeObject)
-    return m_data.map->size();
+    return (unsigned int)m_data.map->size();
   else if (m_type == VariantTypeArray)
-    return m_data.array->size();
+    return (unsigned int)m_data.array->size();
   else if (m_type == VariantTypeString)
-    return m_data.string->size();
+    return (unsigned int)m_data.string->size();
   else if (m_type == VariantTypeWideString)
-    return m_data.wstring->size();
+    return (unsigned int)m_data.wstring->size();
   else
     return 0;
 }

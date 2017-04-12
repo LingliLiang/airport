@@ -7,35 +7,38 @@
 #include <cassert>
 #include "utils/StringConversion.h"
 #include "XZip.h"
+
 /******
 Simple log , only for windows system.
 Author : liang 
 Date: 2016.4.13
 ******/
+
+/**
+indentify log type
+**/
+typedef enum enum_log_type 
+{
+	LOG_NAN = 1,
+	LOG_INFO = 1<<2,
+	LOG_ERROR = 1<<3,
+	LOG_DEBUG = 1<<4
+}TypeLog;
+
 namespace SimpleLOG
 {
-	using namespace StrConversion;
 	/**
 	Log Format : [<date>] [<type> ERROR,INFO,DEBUG,NAN] [<Strings>]
 	**/
 
 #define UNREF(a) a;
-#define TRY_LOG(proc) 	try{  	EnterCriticalSection(&proc);
-#define TRY_END(proc) 	}catch (std::exception& e){ UNREF(e);LeaveCriticalSection(&proc); } catch(...){ LeaveCriticalSection(&proc); m_sError = "Write failed."; } LeaveCriticalSection(&proc);
+#define TRY_LOG(proc) 	try{  	EnterCriticalSection(&proc)
+#define TRY_END(proc) 	}catch (std::exception& e){ UNREF(e);LeaveCriticalSection(&proc); } catch(...){ LeaveCriticalSection(&proc); m_sError = "Write failed."; } LeaveCriticalSection(&proc)
 
 #define CLIENT_INFINITE            0x0000FFFF   //aboat 1min
 #define MAX_QUEUE_BUFFER 26
 #define MAX_STRING 1024
-	/**
-	indentify log type
-	**/
-	typedef enum enum_log_type 
-	{
-		LOG_NON = 1,
-		LOG_INFO = 1<<2,
-		LOG_ERR = 1<<3,
-		LOG_DEG = 1<<4
-	}TypeLog;
+
 
 	/**
 	struct stone one peice's log
@@ -48,25 +51,29 @@ namespace SimpleLOG
 	}FmtLog;
 
 	//SimpleLog
-	extern class SimpleLog* g_psLog;
+	extern class SimpleLog g_sLog;
+
+#define	SPLOGW(type,wchar_text) SimpleLOG::g_sLog.PushLogW((TypeLog)type,wchar_text)
+#define	SPLOGA(type,char_text) SimpleLOG::g_sLog.PushLog((TypeLog)type,char_text)
+
+
+#define	SPLOGWN(type,wchar_format,...) SimpleLOG::g_sLog.PushLogWN((TypeLog)type,wchar_format, ##__VA_ARGS__)
+#define	SPLOGAN(type,char_format,...) SimpleLOG::g_sLog.PushLogN((TypeLog)type,char_format, ##__VA_ARGS__)
 
 #ifndef _UNICODE
 	/**Ascii version**/
-#define SPDEBUG_LOG(log_str)      if(SimpleLOG::g_psLog){SimpleLOG::g_psLog->PushLog(SimpleLOG::LOG_DEG,log_str);}
-#define SPINFO_LOG(log_str)          if(SimpleLOG::g_psLog){SimpleLOG::g_psLog->PushLog(SimpleLOG::LOG_INFO,log_str);}
-#define SPERROR_LOG(log_str)      if(SimpleLOG::g_psLog){SimpleLOG::g_psLog->PushLog(SimpleLOG::LOG_ERR,log_str);}
-#define SP_LOG(log_str)                  if(SimpleLOG::g_psLog){SimpleLOG::g_psLog->PushLog(SimpleLOG::LOG_NON,log_str);}
+#define SPLOGT   SPLOGA
+#define SPLOGTN   SPLOGAN
 #else
 	/**Unicode version**/
-#define SPDEBUG_LOG(log_str)    if(SimpleLOG::g_psLog){SimpleLOG::g_psLog->PushLogW(SimpleLOG::LOG_DEG,log_str);}
-#define SPINFO_LOG(log_str)        if(SimpleLOG::g_psLog){SimpleLOG::g_psLog->PushLogW(SimpleLOG::LOG_INFO,log_str);}
-#define SPERROR_LOG(log_str)    if(SimpleLOG::g_psLog){SimpleLOG::g_psLog->PushLogW(SimpleLOG::LOG_ERR,log_str);}
-#define SP_LOG(log_str)                 if(SimpleLOG::g_psLog){SimpleLOG::g_psLog->PushLogW(SimpleLOG::LOG_NON,log_str);}
+#define SPLOGT   SPLOGW
+#define SPLOGTN   SPLOGWN
 #endif
 
-#define SPSTART_LOG                  SimpleLOG::g_sLog.Start();
-#define SPSTOP_LOG                    SimpleLOG::g_sLog.Stop();
-#define G_LOG                                SimpleLOG::g_sLog
+#define SPSTARTLOG               SimpleLOG::g_sLog.Start()
+#define SPSTOPLOG                   SimpleLOG::g_sLog.Stop()
+#define SPWAITTHREAD(handle) SimpleLOG::g_sLog.AddClientThreadHandle((HANDLE)handle)
+#define GLOG                                SimpleLOG::g_sLog
 
 	class SimpleLog
 	{
@@ -109,8 +116,8 @@ namespace SimpleLOG
 			switch(type)
 			{
 			case LOG_INFO: return "[INFO]";
-			case LOG_ERR: return "[ERROR]";
-			case LOG_DEG: return "[DEBUG]";
+			case LOG_ERROR: return "[ERROR]";
+			case LOG_DEBUG: return "[DEBUG]";
 			default: break;
 			}
 			return "";
@@ -123,15 +130,35 @@ namespace SimpleLOG
 			if(m_exitTread)
 				return false;
 			std::string context;
-			UNICODE_To_ANSI_String(wcontext.data(),context);
+			StrConversion::UNICODE_To_ANSI_String(wcontext.data(),context);
 			FmtLog fLog = {GetCurrentLocalTime(), type, context};
-			TRY_LOG(m_csMutex)
-				m_qLogBlock.push(fLog);
-			TRY_END(m_csMutex)
-				ResumeThread(m_hThread);
+			TRY_LOG(m_csMutex);
+			m_qLogBlock.push(fLog);
+			TRY_END(m_csMutex);
+			ResumeThread(m_hThread);
 			m_nPushCount++;
 			return true;
 		}
+
+		bool PushLogWN(TypeLog type, std::wstring wcontext,...)
+		{
+			if(m_exitTread)
+				return false;
+			std::string context;
+			va_list args;
+			va_start(args, context);
+			std::wstring str = StrConversion::FormatV(wcontext.c_str(), args);
+			va_end(args);
+			StrConversion::UNICODE_To_ANSI_String(str.data(),context);
+			FmtLog fLog = {GetCurrentLocalTime(), type, context};
+			TRY_LOG(m_csMutex);
+			m_qLogBlock.push(fLog);
+			TRY_END(m_csMutex);
+			ResumeThread(m_hThread);
+			m_nPushCount++;
+			return true;
+		}
+
 		/**
 		push a piece log
 		**/
@@ -140,13 +167,31 @@ namespace SimpleLOG
 			if(m_exitTread)
 				return false;
 			FmtLog fLog = {GetCurrentLocalTime(), type, context};
-			TRY_LOG(m_csMutex)
-				m_qLogBlock.push(fLog);
-			TRY_END(m_csMutex)
-				ResumeThread(m_hThread);
+			TRY_LOG(m_csMutex);
+			m_qLogBlock.push(fLog);
+			TRY_END(m_csMutex);
+			ResumeThread(m_hThread);
 			m_nPushCount++;
 			return true;
 		}
+
+		bool PushLogN(TypeLog type, std::string context,...)
+		{
+			if(m_exitTread)
+				return false;
+			va_list args;
+			va_start(args, context);
+			std::string str = StrConversion::FormatV(context.c_str(), args);
+			va_end(args);
+			FmtLog fLog = {GetCurrentLocalTime(), type, str};
+			TRY_LOG(m_csMutex);
+			m_qLogBlock.push(fLog);
+			TRY_END(m_csMutex);
+			ResumeThread(m_hThread);
+			m_nPushCount++;
+			return true;
+		}
+
 		/**
 		Use default.log by default name.you must call this on first pushlog to apply the name. "xxx.log"
 		**/
@@ -175,7 +220,6 @@ namespace SimpleLOG
 				m_bStarted = !m_bStarted;
 			else
 				return;
-			SimpleLOG::g_psLog = this;
 			m_exitTread = false;
 			DWORD dwAttr = ::GetFileAttributesA(m_sLogName.c_str());
 			//file exist backup log file to previous_logs foleder
@@ -208,7 +252,6 @@ namespace SimpleLOG
 		**/
 		void Stop()
 		{
-			SimpleLOG::g_psLog = NULL;
 			//waitting client's thread
 			if(m_hClientThread.size() > 0)
 			{
@@ -320,9 +363,9 @@ namespace SimpleLOG
 		void WriteLogBlock()
 		{
 			// enter critical section
-			TRY_LOG(m_csMutex)
-				//write logs
-				int nBlock = (int)m_qLogBlock.size();
+			TRY_LOG(m_csMutex);
+			//write logs
+			int nBlock = (int)m_qLogBlock.size();
 
 			if(nBlock >= MAX_QUEUE_BUFFER)
 			{
@@ -336,7 +379,7 @@ namespace SimpleLOG
 				m_fs.close();
 			}
 			// leave critical section
-			TRY_END(m_csMutex)
+			TRY_END(m_csMutex);
 		}
 		/**
 		write down data on program exitting, and clear up other things
@@ -346,8 +389,8 @@ namespace SimpleLOG
 			int nBlock = (int)m_qLogBlock.size();
 			if(nBlock > 0)
 			{
-				TRY_LOG(m_csMutex)
-					m_fs.open(m_sLogName.c_str(), std::ios::app | std::ios::out );
+				TRY_LOG(m_csMutex);
+				m_fs.open(m_sLogName.c_str(), std::ios::app | std::ios::out );
 				for(int peice = 0; peice < nBlock; peice++)
 				{
 					FmtLog fLog = m_qLogBlock.front();
@@ -355,7 +398,7 @@ namespace SimpleLOG
 					m_qLogBlock.pop();
 				}
 				m_fs.close();
-				TRY_END(m_csMutex)
+				TRY_END(m_csMutex);
 			}
 		}
 		/**
@@ -418,14 +461,14 @@ namespace SimpleLOG
 			std::wstring logname;
 			std::wstring filedate;
 			std::wstring zipname = _T("previous_log");
-			ANSI_To_UNICODE_String(file_date.c_str(),filedate);
+			StrConversion::ANSI_To_UNICODE_String(file_date.c_str(),filedate);
 			zipname.append(filedate);
 			zipname.append(_T(".zip"));
 
 			hZip = CreateZip((void*)zipname.c_str(),0,ZIP_FILENAME);
 			if(!hZip)
 				return;
-			ANSI_To_UNICODE_String(m_sLogName.c_str(),logname);
+			StrConversion::ANSI_To_UNICODE_String(m_sLogName.c_str(),logname);
 			ret = ZipAdd(hZip,logname.c_str(),(void*)logname.c_str(),0,ZIP_FILENAME);
 			CloseZip(hZip);
 			std::wstring zippath = _T("previous_log\\");
@@ -435,6 +478,7 @@ namespace SimpleLOG
 			if(ret != ZR_OK)
 				m_sError = "Zip log file failed.";
 		}
+
 	private:
 		/*static */std::queue<FmtLog> m_qLogBlock;  //log queue
 

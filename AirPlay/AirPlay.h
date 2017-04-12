@@ -5,6 +5,9 @@ class AIRPLAY_API CAirPlay {
 public:
 	CAirPlay(void);
 	// TODO: 在此添加您的方法。
+
+
+
 };
 
 extern AIRPLAY_API int nAirPlay;
