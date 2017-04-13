@@ -36,7 +36,7 @@ namespace SimpleLOG
 #define TRY_END(proc) 	}catch (std::exception& e){ UNREF(e);LeaveCriticalSection(&proc); } catch(...){ LeaveCriticalSection(&proc); m_sError = "Write failed."; } LeaveCriticalSection(&proc)
 
 #define CLIENT_INFINITE            0x0000FFFF   //aboat 1min
-#define MAX_QUEUE_BUFFER 26
+#define MAX_QUEUE_BUFFER 8
 #define MAX_STRING 1024
 
 
@@ -71,6 +71,7 @@ namespace SimpleLOG
 #endif
 
 #define SPSTARTLOG               SimpleLOG::g_sLog.Start()
+#define SPSTARTLOGD               SimpleLOG::g_sLog.Start(true)
 #define SPSTOPLOG                   SimpleLOG::g_sLog.Stop()
 #define SPWAITTHREAD(handle) SimpleLOG::g_sLog.AddClientThreadHandle((HANDLE)handle)
 #define GLOG                                SimpleLOG::g_sLog
@@ -81,6 +82,7 @@ namespace SimpleLOG
 		SimpleLog::SimpleLog(void)
 			:m_exitTread(true),
 			m_bStarted(false),
+			m_toOutput(false),
 			m_sLogName("default.log")
 		{
 			::InitializeCriticalSection(&m_csMutex);
@@ -213,14 +215,16 @@ namespace SimpleLOG
 		/**
 		Start log must call before first push log
 		**/
-		void Start()
+		void Start(bool outputdebug = false)
 		{
+			m_toOutput = outputdebug;
 			//run once until m_bStarted false agin
 			if(m_bStarted == false)
 				m_bStarted = !m_bStarted;
 			else
 				return;
 			m_exitTread = false;
+			if(m_toOutput) goto End;
 			DWORD dwAttr = ::GetFileAttributesA(m_sLogName.c_str());
 			//file exist backup log file to previous_logs foleder
 			if(INVALID_FILE_ATTRIBUTES  != dwAttr)
@@ -245,6 +249,7 @@ namespace SimpleLOG
 				ZipPreviousLog(filedate); // backup log file
 				::DeleteFileA(m_sLogName.c_str()); //remove log file
 			}
+		End:
 			WatchThread();
 		}
 		/**
@@ -268,7 +273,10 @@ namespace SimpleLOG
 			}
 			WaitForSingleObject( m_hThread, INFINITE ); //wait thread to exit
 			CloseHandle(m_hThread);
-			OnFinalLog();
+			if(!m_toOutput)
+			{
+				OnFinalLog();
+			}
 			if(m_bStarted == true)
 				m_bStarted = !m_bStarted;
 			ClearClinetThread();
@@ -342,7 +350,7 @@ namespace SimpleLOG
 		/**
 		Write log
 		**/
-		bool WriteLog(std::string date, std::string type, std::string context)
+		bool WriteLog(std::string date, std::string type, std::string context,bool output = false)
 		{
 			//int len = strnlen_s(date.c_str(),MAX_PATH) + strnlen_s(type.c_str(),MAX_PATH) + strnlen_s(context.c_str(),MAX_PATH) +2;
 			int len = (int)strnlen_s(date.c_str(),24);
@@ -353,7 +361,13 @@ namespace SimpleLOG
 			bool result = false;
 			char* buffer = new char[len];
 			sprintf_s(buffer,len, "%s %s %s", date.c_str(), type.c_str(), context.c_str()); 
-			result = WriteLog(buffer);
+			if(output)
+			{
+				::OutputDebugStringA(buffer);
+				::OutputDebugStringA("\n");
+			}
+			else
+				result = WriteLog(buffer);
 			delete [] buffer;
 			return result;
 		}
@@ -362,11 +376,18 @@ namespace SimpleLOG
 		**/
 		void WriteLogBlock()
 		{
+			int nBlock = (int)m_qLogBlock.size();
+			if(m_toOutput && nBlock)
+			{
+				FmtLog fLog = m_qLogBlock.front();
+				WriteLog(fLog.date,GetType(fLog.type),fLog.logstring,true);
+				m_qLogBlock.pop();
+				return;
+			}
 			// enter critical section
 			TRY_LOG(m_csMutex);
-			//write logs
-			int nBlock = (int)m_qLogBlock.size();
 
+			//write logs
 			if(nBlock >= MAX_QUEUE_BUFFER)
 			{
 				m_fs.open(m_sLogName.c_str(), std::ios::app | std::ios::out );
@@ -487,6 +508,7 @@ namespace SimpleLOG
 		std::vector<HANDLE> m_hClientThread; //waitting threads
 		bool m_exitTread;
 		bool m_bStarted;
+		bool m_toOutput; // debug option,using outputDebug
 		size_t m_nPushCount;
 		CRITICAL_SECTION m_csMutex; //critical section
 		std::fstream m_fs;

@@ -24,13 +24,13 @@
 
 #pragma once
 
-//#include <atomic>
+//#include <atomic> //std c++11 vs12 later
+#include "Locks.h"
 #include <string>
 #include <stdint.h>
 #include "Event.h"
 #include "threads/ThreadImpl.h"
 #include "threads/ThreadLocal.h"
-//#include "commons/ilog.h"
 
 #ifdef TARGET_DARWIN
 #include <mach/mach.h>
@@ -50,8 +50,6 @@ namespace XbmcThreads { class ThreadSettings; }
 
 class CThread
 {
-  static XbmcCommons::ILogger* logger;
-
 protected:
   CThread(const char* ThreadName);
 
@@ -83,8 +81,6 @@ public:
   static bool IsCurrentThread(const ThreadIdentifier tid);
   static ThreadIdentifier GetCurrentThreadId();
   static CThread* GetCurrentThread();
-  static inline void SetLogger(XbmcCommons::ILogger* logger_) { CThread::logger = logger_; }
-  static inline XbmcCommons::ILogger* GetLogger() { return CThread::logger; }
 
   virtual void OnException(){} // signal termination handler
 protected:
@@ -92,7 +88,8 @@ protected:
   virtual void OnExit(){};
   virtual void Process();
 
-  std::atomic<bool> m_bStop;
+  //std::atomic<bool> m_bStop;
+  CAtomic<bool> m_bStop;
 
   enum WaitResponse { WAIT_INTERRUPTED = -1, WAIT_SIGNALED = 0, WAIT_TIMEDOUT = 1 };
 

@@ -20,13 +20,58 @@
 
 #pragma once
 
-#include "threads/platform/Condition.h"
+#include "threads/Locks.h"
+#include "threads/Helpers.h"
 
 #include "threads/SystemClock.h"
 #include <stdio.h>
 
 namespace XbmcThreads
 {
+
+  /**
+   * This is condition variable implementation that uses the underlying
+   *  Windows mechanisms and assumes Vista (or later)
+   */
+  class ConditionVariable : public NonCopyable
+  {
+    CONDITION_VARIABLE cond;
+
+    // SleepConditionVarialbeCS requires the condition variable be entered
+    //  only once.
+    struct AlmostExit 
+    {
+      unsigned int count;
+      CCriticalSection& cc;
+      inline AlmostExit(CCriticalSection& pcc) : count(pcc.exit(1)), cc(pcc) { cc.count = 0; }
+      inline ~AlmostExit() { cc.count = 1; cc.restore(count); }
+    };
+
+  public:
+    inline ConditionVariable() { InitializeConditionVariable(&cond); }
+
+    // apparently, windows condition variables do not need to be deleted
+    inline ~ConditionVariable() { }
+
+    inline void wait(CCriticalSection& lock) 
+    { 
+      AlmostExit ae(lock);
+      // even the windows implementation is capable of spontaneous wakes
+      SleepConditionVariableCS(&cond,&lock.get_underlying().mutex,INFINITE);
+    }
+
+    inline bool wait(CCriticalSection& lock, unsigned long milliseconds) 
+    { 
+      AlmostExit ae(lock);
+      return SleepConditionVariableCS(&cond,&lock.get_underlying().mutex,milliseconds) ? true : false;
+    }
+
+    inline void wait(CSingleLock& lock) { wait(lock.get_underlying()); }
+    inline bool wait(CSingleLock& lock, unsigned long milliseconds) { return wait(lock.get_underlying(), milliseconds); }
+    inline void notifyAll() { WakeAllConditionVariable(&cond); }
+    inline void notify() { WakeConditionVariable(&cond); }
+  };
+
 
   /**
    * This is a condition variable along with its predicate. This allows the use of a 
@@ -71,5 +116,5 @@ namespace XbmcThreads
     inline void notifyAll() { cond.notifyAll(); }
     inline void notify() { cond.notify(); }
   };
-}
 
+}

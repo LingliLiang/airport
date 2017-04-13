@@ -23,7 +23,8 @@
 #include <vector>
 
 #include "threads/Condition.h"
-#include "threads/SingleLock.h"
+#include "threads/Locks.h"
+#include "threads/CriticalSection.h"
 
 // forward declare the CEventGroup
 namespace XbmcThreads

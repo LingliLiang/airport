@@ -51,8 +51,11 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
   std::pair<tServiceMap::const_iterator, bool> ret = m_service_map.insert(std::make_pair(fcr_identifier, info));
   if(!ret.second) //identifier exists
     return false;
-  if(m_started);
+  if(m_started)
+  {
+	   CPublish::PostJob(new CPublish(fcr_identifier,info));
     //CJobManager::GetInstance().AddJob(new CPublish(fcr_identifier, info), NULL);
+  }
 
   //not yet started, so its just queued
   return true;
@@ -98,6 +101,7 @@ bool CZeroconf::Start()
   m_started = true;
 
   //CJobManager::GetInstance().AddJob(new CPublish(m_service_map), NULL);
+  CPublish::PostJob(new CPublish(m_service_map));
   return true;
 }
 

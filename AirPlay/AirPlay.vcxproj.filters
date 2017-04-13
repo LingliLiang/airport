@@ -70,6 +70,36 @@
     <ClInclude Include="threads\SystemClock.h">
       <Filter>threads</Filter>
     </ClInclude>
+    <ClInclude Include="threads\Job.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="network\AsyncSelectWin32.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\ThreadImpl.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\ThreadLocal.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\Thread.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="sys\crts_caller.h">
+      <Filter>sys</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\Lockables.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="sys\inttypes.h">
+      <Filter>sys</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\Event.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\Atomics.h">
+      <Filter>threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AirPlay.cpp">
@@ -100,6 +130,21 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="threads\SystemClock.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="network\AsyncSelectWin32.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\crts_caller.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\Thread.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\Event.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\Atomics.cpp">
       <Filter>threads</Filter>
     </ClCompile>
   </ItemGroup>

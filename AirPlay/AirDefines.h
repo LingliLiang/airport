@@ -7,6 +7,8 @@
 // 符号视为是被导出的。
 #ifdef AIRPLAY_EXPORTS
 #define AIRPLAY_API __declspec(dllexport)
-#else
+#elif AIRPLAY_IMPORTS
 #define AIRPLAY_API __declspec(dllimport)
+#else
+#define AIRPLAY_API 
 #endif

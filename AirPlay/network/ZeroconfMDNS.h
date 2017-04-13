@@ -29,6 +29,8 @@
 #include <utility>
 #include <vector>
 
+using namespace XbmcThreads;
+
 class CZeroconfMDNS : public CZeroconf/*,public CThread*/
 {
 public:

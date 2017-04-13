@@ -23,7 +23,7 @@
 
 #include <string>
 #include <sstream>
-#include <threads/SingleLock.h>
+#include <threads/Locks.h>
 #include "log\SimpleLog.h"
 
 #pragma comment(lib, "dnssd.lib")

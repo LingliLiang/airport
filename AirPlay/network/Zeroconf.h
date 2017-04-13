@@ -24,8 +24,9 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "threads/Job.h"
 
-class CCriticalSection;
+
 /// this class provides support for zeroconf
 /// while the different zeroconf implementations have asynchronous APIs
 /// this class hides it and provides only few ways to interact
@@ -127,7 +128,7 @@ private:
   };
 
   //protects data
-  CCriticalSection* mp_crit_sec;
+  class CCriticalSection* mp_crit_sec;
   typedef std::map<std::string, PublishInfo> tServiceMap;
   tServiceMap m_service_map;
   bool m_started;
@@ -136,7 +137,7 @@ private:
   static long sm_singleton_guard;
   static CZeroconf* smp_instance;
 
-  class CPublish/* : public CJob*/
+  class CPublish : public CJob
   {
   public:
     CPublish(const std::string& fcr_identifier, const PublishInfo& pubinfo);

@@ -1,7 +1,9 @@
 #pragma once 
 
 #define TARGET_WINDOWS
-
+#if _MSC_VER < 1700
+#define USE_SYS_INTTYPES
+#endif
 #define HAS_AIRTUNES
 #define HAS_AIRPLAY
 
