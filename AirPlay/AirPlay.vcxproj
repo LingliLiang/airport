@@ -147,14 +147,24 @@
     <ClInclude Include="AirPlay.h" />
     <ClInclude Include="log\SimpleLog.h" />
     <ClInclude Include="log\XZip.h" />
+    <ClInclude Include="network\AsyncSelectWin32.h" />
     <ClInclude Include="network\Zeroconf.h" />
     <ClInclude Include="network\ZeroconfMDNS.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system.h" />
+    <ClInclude Include="sys\crts_caller.h" />
+    <ClInclude Include="sys\inttypes.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="threads\Atomics.h" />
     <ClInclude Include="threads\CriticalSection.h" />
+    <ClInclude Include="threads\Event.h" />
+    <ClInclude Include="threads\Job.h" />
+    <ClInclude Include="threads\Lockables.h" />
     <ClInclude Include="threads\Locks.h" />
     <ClInclude Include="threads\SystemClock.h" />
+    <ClInclude Include="threads\Thread.h" />
+    <ClInclude Include="threads\ThreadImpl.h" />
+    <ClInclude Include="threads\ThreadLocal.h" />
     <ClInclude Include="utils\StringConversion.h" />
     <ClInclude Include="utils\Variant.h" />
   </ItemGroup>
@@ -176,6 +186,7 @@
     </ClCompile>
     <ClCompile Include="log\SimpleLog.cpp" />
     <ClCompile Include="log\XZip.cpp" />
+    <ClCompile Include="network\AsyncSelectWin32.cpp" />
     <ClCompile Include="network\Zeroconf.cpp" />
     <ClCompile Include="network\ZeroconfMDNS.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -184,7 +195,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="sys\crts_caller.cpp" />
+    <ClCompile Include="threads\Atomics.cpp" />
+    <ClCompile Include="threads\Event.cpp" />
     <ClCompile Include="threads\SystemClock.cpp" />
+    <ClCompile Include="threads\Thread.cpp" />
     <ClCompile Include="utils\StringConversion.cpp" />
     <ClCompile Include="utils\Variant.cpp" />
   </ItemGroup>
