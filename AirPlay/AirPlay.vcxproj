@@ -32,7 +32,7 @@
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfAtl>Static</UseOfAtl>
@@ -107,7 +107,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(BONJOUR_SDK_HOME)Lib\x64;D:\SDK\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Iphlpapi.lib;winmm.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -147,15 +147,20 @@
     <ClInclude Include="AirPlay.h" />
     <ClInclude Include="log\SimpleLog.h" />
     <ClInclude Include="log\XZip.h" />
+    <ClInclude Include="network\AirPlayServer.h" />
     <ClInclude Include="network\AsyncSelectWin32.h" />
+    <ClInclude Include="network\Network.h" />
+    <ClInclude Include="network\NetworkServices.h" />
+    <ClInclude Include="network\NetworkWin32.h" />
     <ClInclude Include="network\Zeroconf.h" />
     <ClInclude Include="network\ZeroconfMDNS.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="sys\crts_caller.h" />
     <ClInclude Include="sys\inttypes.h" />
+    <ClInclude Include="sys\socket.h" />
+    <ClInclude Include="sys\win32utils.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="threads\Atomics.h" />
     <ClInclude Include="threads\CriticalSection.h" />
     <ClInclude Include="threads\Event.h" />
     <ClInclude Include="threads\Job.h" />
@@ -165,6 +170,11 @@
     <ClInclude Include="threads\Thread.h" />
     <ClInclude Include="threads\ThreadImpl.h" />
     <ClInclude Include="threads\ThreadLocal.h" />
+    <ClInclude Include="utils\HttpHeader.h" />
+    <ClInclude Include="utils\HttpParser.h" />
+    <ClInclude Include="utils\HttpResponse.h" />
+    <ClInclude Include="utils\md5.h" />
+    <ClInclude Include="utils\Stopwatch.h" />
     <ClInclude Include="utils\StringConversion.h" />
     <ClInclude Include="utils\Variant.h" />
   </ItemGroup>
@@ -186,7 +196,11 @@
     </ClCompile>
     <ClCompile Include="log\SimpleLog.cpp" />
     <ClCompile Include="log\XZip.cpp" />
+    <ClCompile Include="network\AirPlayServer.cpp" />
     <ClCompile Include="network\AsyncSelectWin32.cpp" />
+    <ClCompile Include="network\Network.cpp" />
+    <ClCompile Include="network\NetworkServices.cpp" />
+    <ClCompile Include="network\NetworkWin32.cpp" />
     <ClCompile Include="network\Zeroconf.cpp" />
     <ClCompile Include="network\ZeroconfMDNS.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -196,10 +210,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="sys\crts_caller.cpp" />
-    <ClCompile Include="threads\Atomics.cpp" />
+    <ClCompile Include="sys\win32utils.cpp" />
     <ClCompile Include="threads\Event.cpp" />
     <ClCompile Include="threads\SystemClock.cpp" />
     <ClCompile Include="threads\Thread.cpp" />
+    <ClCompile Include="utils\HttpHeader.cpp" />
+    <ClCompile Include="utils\HttpParser.cpp" />
+    <ClCompile Include="utils\HttpResponse.cpp" />
+    <ClCompile Include="utils\md5.cpp" />
+    <ClCompile Include="utils\Stopwatch.cpp" />
     <ClCompile Include="utils\StringConversion.cpp" />
     <ClCompile Include="utils\Variant.cpp" />
   </ItemGroup>

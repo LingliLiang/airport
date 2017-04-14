@@ -28,3 +28,6 @@
 #include <atlstr.h>
 
 #include "AirDefines.h"
+
+
+extern class CAirPlay g_application;

@@ -97,8 +97,38 @@
     <ClInclude Include="threads\Event.h">
       <Filter>threads</Filter>
     </ClInclude>
-    <ClInclude Include="threads\Atomics.h">
-      <Filter>threads</Filter>
+    <ClInclude Include="network\AirPlayServer.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Network.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Stopwatch.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="sys\socket.h">
+      <Filter>sys</Filter>
+    </ClInclude>
+    <ClInclude Include="sys\win32utils.h">
+      <Filter>sys</Filter>
+    </ClInclude>
+    <ClInclude Include="network\NetworkWin32.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\NetworkServices.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\HttpHeader.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\HttpParser.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\HttpResponse.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\md5.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -144,8 +174,35 @@
     <ClCompile Include="threads\Event.cpp">
       <Filter>threads</Filter>
     </ClCompile>
-    <ClCompile Include="threads\Atomics.cpp">
-      <Filter>threads</Filter>
+    <ClCompile Include="network\AirPlayServer.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Network.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Stopwatch.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\win32utils.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="network\NetworkWin32.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\NetworkServices.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\HttpHeader.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\HttpParser.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\HttpResponse.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\md5.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

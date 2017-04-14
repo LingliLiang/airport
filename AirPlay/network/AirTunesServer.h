@@ -25,20 +25,20 @@
 
 #ifdef HAS_AIRTUNES
 
-#include "DllLibShairplay.h"
+//#include "DllLibShairplay.h"
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
 #include <string>
 #include <vector>
 #include <list>
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "utils/HttpParser.h"
-#include "filesystem/PipeFile.h"
+//#include "filesystem/PipeFile.h"
 #include "interfaces/IAnnouncer.h"
-#include "interfaces/IActionListener.h"
+//#include "interfaces/IActionListener.h"
 
 class CDACP;
 class CVariant;
@@ -76,7 +76,7 @@ private:
   static void ResetMetadata();
 
   int m_port;
-  static DllLibShairplay *m_pLibShairplay;//the lib
+  //static DllLibShairplay *m_pLibShairplay;//the lib
   raop_t *m_pRaop;
   XFILE::CPipeFile *m_pPipe;
   static CAirTunesServer *ServerInstance;

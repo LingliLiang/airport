@@ -19,7 +19,7 @@
  */
 
 #include "HttpHeader.h"
-#include "utils/StringUtils.h"
+#include "utils/StringConversion.h"
 
 // header white space characters according to RFC 2616
 const char* const CHttpHeader::m_whitespaceChars = " \t";
@@ -88,10 +88,10 @@ bool CHttpHeader::ParseLine(const std::string& headerLine)
     std::string strParam(headerLine, 0, valueStart);
     std::string strValue(headerLine, valueStart + 1);
 
-    StringUtils::Trim(strParam, m_whitespaceChars);
-    StringUtils::ToLower(strParam);
+    StrConversion::Trim(strParam, m_whitespaceChars);
+    StrConversion::ToLower(strParam);
 
-    StringUtils::Trim(strValue, m_whitespaceChars);
+    StrConversion::Trim(strValue, m_whitespaceChars);
 
     if (!strParam.empty() && !strValue.empty())
       m_params.push_back(HeaderParams::value_type(strParam, strValue));
@@ -107,8 +107,8 @@ bool CHttpHeader::ParseLine(const std::string& headerLine)
 void CHttpHeader::AddParam(const std::string& param, const std::string& value, const bool overwrite /*= false*/)
 {
   std::string paramLower(param);
-  StringUtils::ToLower(paramLower);
-  StringUtils::Trim(paramLower, m_whitespaceChars);
+  StrConversion::ToLower(paramLower);
+  StrConversion::Trim(paramLower, m_whitespaceChars);
   if (paramLower.empty())
     return;
 
@@ -126,7 +126,7 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
   }
 
   std::string valueTrim(value);
-  StringUtils::Trim(valueTrim, m_whitespaceChars);
+  StrConversion::Trim(valueTrim, m_whitespaceChars);
   if (valueTrim.empty())
     return;
 
@@ -136,7 +136,7 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
 std::string CHttpHeader::GetValue(const std::string& strParam) const
 {
   std::string paramLower(strParam);
-  StringUtils::ToLower(paramLower);
+  StrConversion::ToLower(paramLower);
 
   return GetValueRaw(paramLower);
 }
@@ -155,7 +155,7 @@ std::string CHttpHeader::GetValueRaw(const std::string& strParam) const
 
 std::vector<std::string> CHttpHeader::GetValues(std::string strParam) const
 {
-  StringUtils::ToLower(strParam);
+  StrConversion::ToLower(strParam);
   std::vector<std::string> values;
 
   for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
@@ -186,7 +186,7 @@ std::string CHttpHeader::GetMimeType(void) const
   std::string strValue(GetValueRaw("content-type"));
 
   std::string mimeType(strValue, 0, strValue.find(';'));
-  StringUtils::TrimRight(mimeType, m_whitespaceChars);
+  StrConversion::TrimRight(mimeType, m_whitespaceChars);
 
   return mimeType;
 }
@@ -197,7 +197,7 @@ std::string CHttpHeader::GetCharset(void) const
   if (strValue.empty())
     return strValue;
 
-  StringUtils::ToUpper(strValue);
+  StrConversion::ToUpper(strValue);
   const size_t len = strValue.length();
 
   // extract charset value from 'contenttype/contentsubtype;pram1=param1Val ; charset=XXXX\t;param2=param2Val'
@@ -220,14 +220,14 @@ std::string CHttpHeader::GetCharset(void) const
           len -= pos;
         std::string charset(strValue, pos, len);  // intentionally ignoring possible ';' inside quoted string
                                                   // as we don't support any charset with ';' in name
-        StringUtils::Trim(charset, m_whitespaceChars);
+        StrConversion::Trim(charset, m_whitespaceChars);
         if (!charset.empty())
         {
           if (charset[0] != '"')
             return charset;
           else
           { // charset contains quoted string (allowed according to RFC 2616)
-            StringUtils::Replace(charset, "\\", ""); // unescape chars, ignoring possible '\"' and '\\'
+            StrConversion::Replace(charset, "\\", ""); // unescape chars, ignoring possible '\"' and '\\'
             const size_t closingQ = charset.find('"', 1);
             if (closingQ == std::string::npos)
               return ""; // no closing quote

@@ -35,7 +35,7 @@ void CZeroconfMDNS::Process()
 }
 
 
-CZeroconfMDNS::CZeroconfMDNS() /* : CThread("ZerocconfEmbedded")*/
+CZeroconfMDNS::CZeroconfMDNS()  : CThread("ZerocconfEmbedded")
 {
   m_service = NULL;
 }

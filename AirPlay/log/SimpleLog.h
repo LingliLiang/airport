@@ -22,7 +22,8 @@ typedef enum enum_log_type
 	LOG_NAN = 1,
 	LOG_INFO = 1<<2,
 	LOG_ERROR = 1<<3,
-	LOG_DEBUG = 1<<4
+	LOG_DEBUG = 1<<4,
+	LOG_WARNING = 1<<5
 }TypeLog;
 
 namespace SimpleLOG
@@ -120,6 +121,7 @@ namespace SimpleLOG
 			case LOG_INFO: return "[INFO]";
 			case LOG_ERROR: return "[ERROR]";
 			case LOG_DEBUG: return "[DEBUG]";
+			case LOG_WARNING: return "[WARNING]";
 			default: break;
 			}
 			return "";

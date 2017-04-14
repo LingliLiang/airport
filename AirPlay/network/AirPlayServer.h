@@ -28,7 +28,7 @@
 #include <map>
 #include <vector>
 #include <sys/socket.h>
-//#include "threads/Thread.h"
+#include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "utils/HttpParser.h"
 #include "interfaces/IAnnouncer.h"
@@ -46,7 +46,7 @@ enum PlayListType
 	PLAYLIST_MIRROR =3
 };
 
-class CAirPlayServer : /*public CThread,*/ public ANNOUNCEMENT::IAnnouncer
+class CAirPlayServer : public CThread, public ANNOUNCEMENT::IAnnouncer
 {
 public:
   // IAnnouncer IF
@@ -89,7 +89,7 @@ private:
 
     void Disconnect();
 
-    int m_socket;
+    SOCKET m_socket;
     struct sockaddr_storage m_cliaddr;
     socklen_t m_addrlen;
     CCriticalSection m_critSection;
@@ -114,7 +114,11 @@ private:
   CCriticalSection m_connectionLock;
   std::vector<CTCPClient> m_connections;
   std::map<std::string, int> m_reverseSockets;
-  int m_ServerSocket;
+
+
+  SOCKET m_ServerSocket;
+
+  SOCKET m_MirrorSocket;
   int m_port;
   bool m_nonlocal;
   bool m_usePassword;

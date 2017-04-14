@@ -30,28 +30,28 @@
 #include <string>
 #include <utility>
 
-#include "Application.h"
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
-#include "FileItem.h"
-#include "filesystem/File.h"
-#include "filesystem/PipeFile.h"
-#include "GUIInfoManager.h"
-#include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
-#include "interfaces/AnnouncementManager.h"
-#include "messaging/ApplicationMessenger.h"
-#include "music/tags/MusicInfoTag.h"
+#include "AirPlay.h"
+//#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
+//#include "FileItem.h"
+//#include "filesystem/File.h"
+//#include "filesystem/PipeFile.h"
+//#include "GUIInfoManager.h"
+//#include "guilib/GUIWindowManager.h"
+//#include "input/Key.h"
+//#include "interfaces/AnnouncementManager.h"
+//#include "messaging/ApplicationMessenger.h"
+//#include "music/tags/MusicInfoTag.h"
 #include "network/dacp/dacp.h"
 #include "network/Network.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "URL.h"
+//#include "settings/AdvancedSettings.h"
+//#include "settings/Settings.h"
+//#include "URL.h"
 #include "utils/EndianSwap.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "utils/SystemInfo.h"
+#include "log/SimpleLog.h"
+//#include "utils/StringUtils.h"
+//#include "utils/SystemInfo.h"
 #include "utils/Variant.h"
 
 #if !defined(TARGET_WINDOWS)
@@ -66,11 +66,11 @@
 #define TMP_COVERART_PATH_PNG "special://temp/airtunes_album_thumb.png"
 #define ZEROCONF_DACP_SERVICE "_dacp._tcp"
 
-using namespace XFILE;
+//using namespace XFILE;
 using namespace ANNOUNCEMENT;
-using namespace KODI::MESSAGING;
+//using namespace KODI::MESSAGING;
 
-DllLibShairplay *CAirTunesServer::m_pLibShairplay = NULL;
+//DllLibShairplay *CAirTunesServer::m_pLibShairplay = NULL;
 CAirTunesServer *CAirTunesServer::ServerInstance = NULL;
 std::string CAirTunesServer::m_macAddress;
 std::string CAirTunesServer::m_metadata[3];
@@ -133,7 +133,7 @@ void CAirTunesServer::RefreshMetadata()
   if (m_metadata[2].length())
     tag.SetArtist(m_metadata[2]);//artist
   
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1, static_cast<void*>(new CFileItem(tag)));
+  //CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1, static_cast<void*>(new CFileItem(tag)));
 }
 
 void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
