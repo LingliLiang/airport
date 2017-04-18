@@ -21,7 +21,7 @@
  */
 
 #include <string>
-#include "URL.h"
+//#include "URL.h"
 
 class CDACP
 {
@@ -45,5 +45,5 @@ class CDACP
   private:
     void SendCmd(const std::string &cmd);
 
-    CURL m_dacpUrl;
+    //CURL m_dacpUrl;
 };

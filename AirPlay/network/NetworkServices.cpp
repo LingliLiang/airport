@@ -22,23 +22,10 @@
 #include "NetworkServices.h"
 #include <utility>
 #include "AirPlay.h"
-//#include "dialogs/GUIDialogKaiToast.h"
-//#include "dialogs/GUIDialogOK.h"
-//#include "guilib/LocalizeStrings.h"
-//#include "messaging/ApplicationMessenger.h"
-//#include "messaging/helpers/DialogHelper.h"
 #include "network/Network.h"
-//#include "settings/AdvancedSettings.h"
-//#include "settings/lib/Setting.h"
-//#include "settings/Settings.h"
 #include "log/SimpleLog.h"
-//#include "utils/RssManager.h"
-//#include "utils/SystemInfo.h"
 #include "utils/Variant.h"
 
-#ifdef TARGET_LINUX
-#include "Util.h"
-#endif
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"
 #endif // HAS_AIRPLAY
@@ -51,115 +38,20 @@
 #include "network/EventServer.h"
 #endif // HAS_EVENT_SERVER
 
-#ifdef HAS_JSONRPC
-#include "interfaces/json-rpc/JSONRPC.h"
-#include "network/TCPServer.h"
-#endif
-
 #ifdef HAS_ZEROCONF
 #include "network/Zeroconf.h"
 #endif // HAS_ZEROCONF
 
-#ifdef HAS_UPNP
-#include "network/upnp/UPnP.h"
-#endif // HAS_UPNP
-
-#ifdef HAS_WEB_SERVER
-#include "network/WebServer.h"
-#include "network/httprequesthandler/HTTPImageHandler.h"
-#include "network/httprequesthandler/HTTPImageTransformationHandler.h"
-#include "network/httprequesthandler/HTTPVfsHandler.h"
-#ifdef HAS_JSONRPC
-#include "network/httprequesthandler/HTTPJsonRpcHandler.h"
-#endif // HAS_JSONRPC
-#ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
-#include "network/httprequesthandler/HTTPPythonHandler.h"
-#endif
-#include "network/httprequesthandler/HTTPWebinterfaceHandler.h"
-#include "network/httprequesthandler/HTTPWebinterfaceAddonsHandler.h"
-#endif // HAS_WEB_INTERFACE
-#endif // HAS_WEB_SERVER
-
-#if defined(TARGET_DARWIN_OSX)
-#include "platform/darwin/osx/XBMCHelper.h"
-#endif
-
-//using namespace KODI::MESSAGING;
-#ifdef HAS_JSONRPC
-using namespace JSONRPC;
-#endif // HAS_JSONRPC
 #ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
 #endif // HAS_EVENT_SERVER
-#ifdef HAS_UPNP
-using namespace UPNP;
-#endif // HAS_UPNP
-
-//using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CNetworkServices::CNetworkServices()
-#ifdef HAS_WEB_SERVER
-  :
-  m_webserver(*new CWebServer),
-  m_httpImageHandler(*new CHTTPImageHandler),
-  m_httpImageTransformationHandler(*new CHTTPImageTransformationHandler),
-  m_httpVfsHandler(*new CHTTPVfsHandler)
-#ifdef HAS_JSONRPC
-  , m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
-#endif // HAS_JSONRPC
-#ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
-  , m_httpPythonHandler(*new CHTTPPythonHandler)
-#endif
-  , m_httpWebinterfaceHandler(*new CHTTPWebinterfaceHandler)
-  , m_httpWebinterfaceAddonsHandler(*new CHTTPWebinterfaceAddonsHandler)
-#endif // HAS_WEB_INTERFACE
-#endif // HAS_WEB_SERVER
 {
-#ifdef HAS_WEB_SERVER
-  m_webserver.RegisterRequestHandler(&m_httpImageHandler);
-  m_webserver.RegisterRequestHandler(&m_httpImageTransformationHandler);
-  m_webserver.RegisterRequestHandler(&m_httpVfsHandler);
-#ifdef HAS_JSONRPC
-  m_webserver.RegisterRequestHandler(&m_httpJsonRpcHandler);
-#endif // HAS_JSONRPC
-#ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
-  m_webserver.RegisterRequestHandler(&m_httpPythonHandler);
-#endif
-  m_webserver.RegisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
-  m_webserver.RegisterRequestHandler(&m_httpWebinterfaceHandler);
-#endif // HAS_WEB_INTERFACE
-#endif // HAS_WEB_SERVER
 }
 
 CNetworkServices::~CNetworkServices()
 {
-#ifdef HAS_WEB_SERVER
-  m_webserver.UnregisterRequestHandler(&m_httpImageHandler);
-  delete &m_httpImageHandler;
-  m_webserver.UnregisterRequestHandler(&m_httpImageTransformationHandler);
-  delete &m_httpImageTransformationHandler;
-  m_webserver.UnregisterRequestHandler(&m_httpVfsHandler);
-  delete &m_httpVfsHandler;
-#ifdef HAS_JSONRPC
-  m_webserver.UnregisterRequestHandler(&m_httpJsonRpcHandler);
-  delete &m_httpJsonRpcHandler;
-  CJSONRPC::Cleanup();
-#endif // HAS_JSONRPC
-#ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
-  m_webserver.UnregisterRequestHandler(&m_httpPythonHandler);
-  delete &m_httpPythonHandler;
-#endif
-  m_webserver.UnregisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
-  delete &m_httpWebinterfaceAddonsHandler;
-  m_webserver.UnregisterRequestHandler(&m_httpWebinterfaceHandler);
-  delete &m_httpWebinterfaceHandler;
-#endif // HAS_WEB_INTERFACE
-  delete &m_webserver;
-#endif // HAS_WEB_SERVER
 }
 
 CNetworkServices& CNetworkServices::GetInstance()
@@ -476,11 +368,7 @@ CNetworkServices& CNetworkServices::GetInstance()
 void CNetworkServices::Start()
 {
   StartZeroconf();
-#ifdef HAS_WEB_SERVER
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_WEBSERVER) && !StartWebserver())
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
-#endif // HAS_WEB_SERVER
-  StartUPnP();
+
   //if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartEventServer())
   //  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   //if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartJSONRPCServer())
@@ -489,95 +377,18 @@ void CNetworkServices::Start()
   // note - airtunesserver has to start before airplay server (ios7 client detection bug)
   StartAirTunesServer();
   StartAirPlayServer();
-  //StartRss();
 }
 
 void CNetworkServices::Stop(bool bWait)
 {
   if (bWait)
   {
-    StopUPnP(bWait);
     StopZeroconf();
-    StopWebserver();
-    //StopRss();
   }
 
   StopEventServer(bWait, false);
-  StopJSONRPCServer(bWait);
   StopAirPlayServer(bWait);
   StopAirTunesServer(bWait);
-}
-
-bool CNetworkServices::StartWebserver()
-{
-#ifdef HAS_WEB_SERVER
-  if (!g_application.getNetwork().IsAvailable())
-    return false;
-
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
-    return false;
-
-  int webPort = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_WEBSERVERPORT);
-  if (!ValidatePort(webPort))
-  {
-    SPLOGAN(LOGERROR, "Cannot start Web Server on port %i", webPort);
-    return false;
-  }
-
-  if (IsWebserverRunning())
-    return true;
-
-  if (!m_webserver.Start(webPort, CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME), CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD)))
-    return false;
-
-#ifdef HAS_ZEROCONF
-  std::vector<std::pair<std::string, std::string> > txt;
-  // publish web frontend and API services
-#ifdef HAS_WEB_INTERFACE
-  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", CSysInfo::GetDeviceName(), webPort, txt);
-#endif // HAS_WEB_INTERFACE
-#ifdef HAS_JSONRPC
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp", CSysInfo::GetDeviceName(), webPort, txt);
-#endif // HAS_JSONRPC
-#endif // HAS_ZEROCONF
-
-  return true;
-#endif // HAS_WEB_SERVER
-  return false;
-}
-
-bool CNetworkServices::IsWebserverRunning()
-{
-#ifdef HAS_WEB_SERVER
-  return m_webserver.IsStarted();
-#endif // HAS_WEB_SERVER
-  return false;
-}
-
-bool CNetworkServices::StopWebserver()
-{
-#ifdef HAS_WEB_SERVER
-  if (!IsWebserverRunning())
-    return true;
-
-  if (!m_webserver.Stop() || m_webserver.IsStarted())
-  {
-    SPLOGAN(LOGWARNING, "Webserver: Failed to stop.");
-    return false;
-  }
-  
-#ifdef HAS_ZEROCONF
-#ifdef HAS_WEB_INTERFACE
-  CZeroconf::GetInstance()->RemoveService("servers.webserver");
-#endif // HAS_WEB_INTERFACE
-#ifdef HAS_JSONRPC
-  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-http");
-#endif // HAS_JSONRPC
-#endif // HAS_ZEROCONF
-
-  return true;
-#endif // HAS_WEB_SERVER
-  return false;
 }
 
 bool CNetworkServices::StartAirPlayServer()
@@ -650,17 +461,17 @@ bool CNetworkServices::StopAirPlayServer(bool bWait)
 bool CNetworkServices::StartAirTunesServer()
 {
 #ifdef HAS_AIRTUNES
-  if (!g_application.getNetwork().IsAvailable() || !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+	if (!g_application.getNetwork().IsAvailable() || !g_application.getSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
 
   if (IsAirTunesServerRunning())
     return true;
 
-  if (!CAirTunesServer::StartServer(g_advancedSettings.m_airTunesPort, true,
-                                    CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD),
-                                    CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD)))
+  if (!CAirTunesServer::StartServer(g_application.getSettings().GetInt(CSettings::SETTING_SERVICES_AIRTUNES_PORT), true,
+                                    g_application.getSettings().GetBool(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD),
+                                    g_application.getSettings().GetString(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD)))
   {
-    SPLOGAN(LOGERROR, "Failed to start AirTunes Server");
+    SPLOGA(LOG_ERROR, "Failed to start AirTunes Server");
     return false;
   }
 
@@ -686,53 +497,6 @@ bool CNetworkServices::StopAirTunesServer(bool bWait)
   CAirTunesServer::StopServer(bWait);
   return true;
 #endif // HAS_AIRTUNES
-  return false;
-}
-
-bool CNetworkServices::StartJSONRPCServer()
-{
-#ifdef HAS_JSONRPC
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
-    return false;
-
-  if (IsJSONRPCServerRunning())
-    return true;
-
-  if (!CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES)))
-    return false;
-
-#ifdef HAS_ZEROCONF
-  std::vector<std::pair<std::string, std::string> > txt;
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_jsonTcpPort, txt);
-#endif // HAS_ZEROCONF
-
-  return true;
-#endif // HAS_JSONRPC
-  return false;
-}
-
-bool CNetworkServices::IsJSONRPCServerRunning()
-{
-#ifdef HAS_JSONRPC
-  return CTCPServer::IsRunning();
-#endif // HAS_JSONRPC
-  return false;
-}
-
-bool CNetworkServices::StopJSONRPCServer(bool bWait)
-{
-#ifdef HAS_JSONRPC
-  if (!IsJSONRPCServerRunning())
-    return true;
-
-  CTCPServer::StopServer(bWait);
-
-#ifdef HAS_ZEROCONF
-  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-tcp");
-#endif // HAS_ZEROCONF
-
-  return true;
-#endif // HAS_JSONRPC
   return false;
 }
 
@@ -823,204 +587,6 @@ bool CNetworkServices::RefreshEventServer()
   return false;
 }
 
-bool CNetworkServices::StartUPnP()
-{
-  bool ret = false;
-#ifdef HAS_UPNP
-  ret |= StartUPnPClient();
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPSERVER))
-  {
-   ret |= StartUPnPServer();
-  }
-
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPCONTROLLER))
-  {
-    ret |= StartUPnPController();
-  }
-
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPRENDERER))
-  {
-    ret |= StartUPnPRenderer();
-  }
-#endif // HAS_UPNP
-  return ret;
-}
-
-bool CNetworkServices::StopUPnP(bool bWait)
-{
-#ifdef HAS_UPNP
-  if (!CUPnP::IsInstantiated())
-    return true;
-
-  SPLOGAN(LOGNOTICE, "stopping upnp");
-  CUPnP::ReleaseInstance(bWait);
-
-  return true;
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::StartUPnPClient()
-{
-#ifdef HAS_UPNP
-  SPLOGAN(LOGNOTICE, "starting upnp client");
-  CUPnP::GetInstance()->StartClient();
-  return IsUPnPClientRunning();
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::IsUPnPClientRunning()
-{
-#ifdef HAS_UPNP
-  return CUPnP::GetInstance()->IsClientStarted();
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::StopUPnPClient()
-{
-#ifdef HAS_UPNP
-  if (!IsUPnPClientRunning())
-    return true;
-
-  SPLOGAN(LOGNOTICE, "stopping upnp client");
-  CUPnP::GetInstance()->StopClient();
-
-  return true;
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::StartUPnPController()
-{
-#ifdef HAS_UPNP
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPCONTROLLER) ||
-      !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPSERVER))
-    return false;
-
-  SPLOGAN(LOGNOTICE, "starting upnp controller");
-  CUPnP::GetInstance()->StartController();
-  return IsUPnPControllerRunning();
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::IsUPnPControllerRunning()
-{
-#ifdef HAS_UPNP
-  return CUPnP::GetInstance()->IsControllerStarted();
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::StopUPnPController()
-{
-#ifdef HAS_UPNP
-  if (!IsUPnPControllerRunning())
-    return true;
-
-  SPLOGAN(LOGNOTICE, "stopping upnp controller");
-  CUPnP::GetInstance()->StopController();
-
-  return true;
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::StartUPnPRenderer()
-{
-#ifdef HAS_UPNP
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPRENDERER))
-    return false;
-
-  SPLOGAN(LOGNOTICE, "starting upnp renderer");
-  return CUPnP::GetInstance()->StartRenderer();
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::IsUPnPRendererRunning()
-{
-#ifdef HAS_UPNP
-  return CUPnP::GetInstance()->IsInstantiated();
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::StopUPnPRenderer()
-{
-#ifdef HAS_UPNP
-  if (!IsUPnPRendererRunning())
-    return true;
-
-  SPLOGAN(LOGNOTICE, "stopping upnp renderer");
-  CUPnP::GetInstance()->StopRenderer();
-
-  return true;
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::StartUPnPServer()
-{
-#ifdef HAS_UPNP
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPSERVER))
-    return false;
-
-  SPLOGAN(LOGNOTICE, "starting upnp server");
-  return CUPnP::GetInstance()->StartServer();
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::IsUPnPServerRunning()
-{
-#ifdef HAS_UPNP
-  return CUPnP::GetInstance()->IsInstantiated();
-#endif // HAS_UPNP
-  return false;
-}
-
-bool CNetworkServices::StopUPnPServer()
-{
-#ifdef HAS_UPNP
-  if (!IsUPnPServerRunning())
-    return true;
-
-  StopUPnPController();
-
-  SPLOGAN(LOGNOTICE, "stopping upnp server");
-  CUPnP::GetInstance()->StopServer();
-
-  return true;
-#endif // HAS_UPNP
-  return false;
-}
-  
-//bool CNetworkServices::StartRss()
-//{
-//  if (IsRssRunning())
-//    return true;
-//
-//  CRssManager::GetInstance().Start();
-//  return true;
-//}
-//
-//bool CNetworkServices::IsRssRunning()
-//{
-//  return CRssManager::GetInstance().IsActive();
-//}
-//
-//bool CNetworkServices::StopRss()
-//{
-//  if (!IsRssRunning())
-//    return true;
-//
-//  CRssManager::GetInstance().Stop();
-//  return true;
-//}
-
 bool CNetworkServices::StartZeroconf()
 {
 #ifdef HAS_ZEROCONF
@@ -1062,11 +628,5 @@ bool CNetworkServices::ValidatePort(int port)
 {
   if (port <= 0 || port > 65535)
     return false;
-
-#ifdef TARGET_LINUX
-  if (!CUtil::CanBindPrivileged() && (port < 1024 || port > 65535))
-    return false;
-#endif
-
   return true;
 }

@@ -27,8 +27,8 @@
 #include <dns_sd.h>
 
 #include "network/ZeroconfBrowser.h"
-#include "sys/CriticalSection.h"
-#include "sys/Thread.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 
 //platform specific implementation of  zeroconfbrowser interface using native os x APIs
 class CZeroconfBrowserMDNS : public CZeroconfBrowser

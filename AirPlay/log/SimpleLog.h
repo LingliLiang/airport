@@ -37,7 +37,7 @@ namespace SimpleLOG
 #define TRY_END(proc) 	}catch (std::exception& e){ UNREF(e);LeaveCriticalSection(&proc); } catch(...){ LeaveCriticalSection(&proc); m_sError = "Write failed."; } LeaveCriticalSection(&proc)
 
 #define CLIENT_INFINITE            0x0000FFFF   //aboat 1min
-#define MAX_QUEUE_BUFFER 8
+#define MAX_QUEUE_BUFFER 1
 #define MAX_STRING 1024
 
 
@@ -381,9 +381,12 @@ namespace SimpleLOG
 			int nBlock = (int)m_qLogBlock.size();
 			if(m_toOutput && nBlock)
 			{
-				FmtLog fLog = m_qLogBlock.front();
-				WriteLog(fLog.date,GetType(fLog.type),fLog.logstring,true);
-				m_qLogBlock.pop();
+				for(int peice = 0; peice < nBlock; peice++)
+				{
+					FmtLog fLog = m_qLogBlock.front();
+					WriteLog(fLog.date,GetType(fLog.type),fLog.logstring,true);
+					m_qLogBlock.pop();
+				}
 				return;
 			}
 			// enter critical section

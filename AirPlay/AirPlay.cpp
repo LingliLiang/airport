@@ -21,9 +21,11 @@ SettingPair allDefaultSettings[]= {
 	{CSettings::SETTING_SERVICES_AIRPLAY_DEVICENAME,"AirFake"},
 	{CSettings::SETTING_SERVICES_AIRPLAY_VIDEOSUPPORT,"1"},
 	{CSettings::SETTING_SERVICES_AIRPLAY_PORT,"9648"},
-	{CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD,""},
+	{CSettings::SETTING_SERVICES_AIRTUNES_PORT,"9649"},
+	{CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD,"0"},
 	{CSettings::SETTING_SERVICES_AIRPLAYPASSWORD,""},
 	{CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL,"0"},
+	{CSettings::SETTING_LOGAIRTUNES,"0"},
 	{CSettings::SETTING_END,""}
 };
 
@@ -130,7 +132,7 @@ CSettings& CAirPlay::getSettings()
 bool CAirPlay::StartServices()
 {
 	m_network->NetworkMessage(CNetwork::SERVICES_UP, 0);
-	SPLOGA(LOG_ERROR, "AIRPLAY Server: Network start failed!");
+	//SPLOGA(LOG_ERROR, "AIRPLAY Server: Network start failed!");
 	return true;
 }
 
@@ -147,14 +149,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
-	Sleep(2000);
 	g_application.StartServices();
+	HANDLE env;
+	env = ::CreateEventA(0,FALSE,FALSE,NULL);
+	::WaitForSingleObject(env,1000);
+	::ResetEvent(env);
 	::MessageBoxA(NULL,"Zeroconf Test","Zeroconf",0);
-	//HANDLE env;
-	//env = ::CreateEventA(0,FALSE,FALSE,NULL);
-	//::WaitForSingleObject(env,60000);
-	//::CloseHandle(env);
 	g_application.StopServices();
-	Sleep(2000);
+	::WaitForSingleObject(env,1000);
+	CloseHandle(env);
 	return 0;
 }

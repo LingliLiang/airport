@@ -26,6 +26,12 @@
     <Filter Include="utils">
       <UniqueIdentifier>{712644c5-2e8f-4f52-a15c-f0c59a1ab287}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shairplay">
+      <UniqueIdentifier>{bfeef854-8d5f-4a22-a913-f872dbe0d465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dllLoader">
+      <UniqueIdentifier>{7c05246b-782e-482e-bca8-18ad9354fce3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AirDefines.h">
@@ -130,6 +136,45 @@
     <ClInclude Include="utils\md5.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="network\AirTunesServer.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\AirAction.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\EndianSwap.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Base64.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="dllLoader\LibraryLoader.h">
+      <Filter>dllLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="dllLoader\DynamicDll.h">
+      <Filter>dllLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="network\DllLibShairplay.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="shairplay\raop.h">
+      <Filter>shairplay</Filter>
+    </ClInclude>
+    <ClInclude Include="dllLoader\SectionLoader.h">
+      <Filter>dllLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="dllLoader\Win32DllLoader.h">
+      <Filter>dllLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="network\dacp.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\ZeroconfBrowser.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\ZeroconfBrowserMDNS.h">
+      <Filter>network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AirPlay.cpp">
@@ -203,6 +248,36 @@
     </ClCompile>
     <ClCompile Include="utils\md5.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="network\AirTunesServer.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\EndianSwap.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Base64.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="dllLoader\LibraryLoader.cpp">
+      <Filter>dllLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="dllLoader\DynamicDll.cpp">
+      <Filter>dllLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="dllLoader\SectionLoader.cpp">
+      <Filter>dllLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="dllLoader\Win32DllLoader.cpp">
+      <Filter>dllLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="network\dacp.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\ZeroconfBrowser.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\ZeroconfBrowserMDNS.cpp">
+      <Filter>network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,30 +22,14 @@
 #include <stdexcept>
 #include <cassert>
 
-#if defined (HAS_AVAHI)
-#include "linux/ZeroconfBrowserAvahi.h"
-#elif defined(TARGET_DARWIN)
-//on osx use the native implementation
-#include "osx/ZeroconfBrowserOSX.h"
-#elif defined(HAS_MDNS)
+#if defined(HAS_MDNS)
 #include "ZeroconfBrowserMDNS.h"
 #endif
 
-#include "sys/CriticalSection.h"
-#include "sys/SingleLock.h"
-#include "sys/Atomics.h"
-
-#if !defined(HAS_ZEROCONF)
-//dummy implementation used if no zeroconf is present
-//should be optimized away
-class CZeroconfBrowserDummy : public CZeroconfBrowser
-{
-  virtual bool doAddServiceType(const std::string&){return false;}
-  virtual bool doRemoveServiceType(const std::string&){return false;}
-  virtual std::vector<ZeroconfService> doGetFoundServices(){return std::vector<ZeroconfService>();}
-  virtual bool doResolveService(ZeroconfService&, double){return false;}
-};
-#endif
+#include "threads/CriticalSection.h"
+#include "threads/Locks.h"
+#include "threads/Atomics.h"
+#include "log\SimpleLog.h"
 
 long CZeroconfBrowser::sm_singleton_guard = 0;
 CZeroconfBrowser* CZeroconfBrowser::smp_instance = 0;
@@ -122,7 +106,7 @@ std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowser::GetFoundService
     return doGetFoundServices();
   else
   {
-    //CLog::Log(LOGDEBUG, "CZeroconfBrowser::GetFoundServices asked for services without browser running");
+    SPLOGA(LOG_DEBUG, "CZeroconfBrowser::GetFoundServices asked for services without browser running");
     return std::vector<ZeroconfService>();
   }
 }
@@ -134,7 +118,7 @@ bool CZeroconfBrowser::ResolveService(ZeroconfService& fr_service, double f_time
   {
     return doResolveService(fr_service, f_timeout);
   }
-  //CLog::Log(LOGDEBUG, "CZeroconfBrowser::GetFoundServices asked for services without browser running");
+  SPLOGA(LOG_DEBUG, "CZeroconfBrowser::GetFoundServices asked for services without browser running");
   return false;
 }
 
@@ -146,16 +130,9 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
     CAtomicSpinLock lock(sm_singleton_guard);
     if(!smp_instance)
     {
-#if !defined(HAS_ZEROCONF)
-      smp_instance = new CZeroconfBrowserDummy;
-#else
-#if defined(TARGET_DARWIN)
-      smp_instance = new CZeroconfBrowserOSX;
-#elif defined(HAS_AVAHI)
-      smp_instance  = new CZeroconfBrowserAvahi;
-#elif defined(HAS_MDNS)
+
+#if defined(HAS_MDNS)
       smp_instance  = new CZeroconfBrowserMDNS;
-#endif
 #endif
     }
   }
@@ -220,10 +197,10 @@ void CZeroconfBrowser::ZeroconfService::SetTxtRecords(const tTxtRecordMap& txt_r
 {
   m_txtrecords_map = txt_records;
   
-  CLog::Log(LOGDEBUG,"CZeroconfBrowser: dump txt-records");
+  SPLOGA(LOG_DEBUG,"CZeroconfBrowser: dump txt-records");
   for(tTxtRecordMap::const_iterator it = m_txtrecords_map.begin(); it != m_txtrecords_map.end(); ++it)
   {
-    CLog::Log(LOGDEBUG,"CZeroconfBrowser:  key: %s value: %s",it->first.c_str(), it->second.c_str());
+    SPLOGAN(LOG_DEBUG,"CZeroconfBrowser:  key: %s value: %s",it->first.c_str(), it->second.c_str());
   }
 }
 

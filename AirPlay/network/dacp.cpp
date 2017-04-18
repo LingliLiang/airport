@@ -19,7 +19,7 @@
  */
 
 #include "dacp.h"
-#include "filesystem/File.h"
+//#include "filesystem/File.h"
 
 #define AIRTUNES_DACP_CMD_URI "ctrl-int/1/"
 
@@ -27,19 +27,19 @@
 
 CDACP::CDACP(const std::string &active_remote_header, const std::string &hostname, int port)
 {
-  m_dacpUrl.SetHostName(hostname);
-  m_dacpUrl.SetPort(port);
-  m_dacpUrl.SetProtocol("http");
-  m_dacpUrl.SetProtocolOption("Active-Remote", active_remote_header);
+  //m_dacpUrl.SetHostName(hostname);
+  //m_dacpUrl.SetPort(port);
+  //m_dacpUrl.SetProtocol("http");
+  //m_dacpUrl.SetProtocolOption("Active-Remote", active_remote_header);
 }
 
 void CDACP::SendCmd(const std::string &cmd)
 {
-  m_dacpUrl.SetFileName(AIRTUNES_DACP_CMD_URI + cmd);
-  // issue the command
-  XFILE::CFile file;
-  file.Open(m_dacpUrl);
-  file.Write(NULL, 0);
+  //m_dacpUrl.SetFileName(AIRTUNES_DACP_CMD_URI + cmd);
+  //// issue the command
+  //XFILE::CFile file;
+  //file.Open(m_dacpUrl);
+  //file.Write(NULL, 0);
 }
 
 void CDACP::BeginFwd()

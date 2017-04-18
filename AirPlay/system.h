@@ -4,14 +4,14 @@
 #if _MSC_VER < 1700
 #define USE_SYS_INTTYPES
 #endif
-//#define HAS_AIRTUNES
+#define HAS_AIRTUNES
 #define HAS_AIRPLAY
 
 #define HAS_MDNS
 #define HAS_ZEROCONF
 
 #define HAS_LOG
-
+#define LOGALL
 
 // A macro to disallow the copy constructor and operator= functions
 // This should be used in the private: declarations for a class

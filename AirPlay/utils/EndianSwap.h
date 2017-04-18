@@ -22,17 +22,9 @@
 
  /* Endian_SwapXX functions taken from SDL (SDL_endian.h) */
 
-/* Include config.h to define (or not) WORDS_BIGENDIAN
-   File created by configure */
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-#include "config.h"
-#endif
-#ifdef TARGET_POSIX
-#include <inttypes.h>
-#elif TARGET_WINDOWS
+
 #define __inline__ __inline
 #include <stdint.h>
-#endif
 
 
 /* Set up for C function definitions, even when using C++ */
