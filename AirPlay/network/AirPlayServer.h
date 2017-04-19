@@ -35,7 +35,7 @@
 
 class CVariant;
 
-#define AIRPLAY_SERVER_VERSION_STR "101.28"
+#define AIRPLAY_SERVER_VERSION_STR "130.14"
 
 enum PlayListType
 {

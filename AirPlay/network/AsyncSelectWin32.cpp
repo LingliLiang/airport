@@ -5,6 +5,7 @@
 #include "network/AsyncSelectWin32.h"
 #include"log\SimpleLog.h"
 #include "network/Zeroconf.h"
+#include "ZeroconfBrowser.h"
 #include <map>
 using namespace std;
 
@@ -31,12 +32,13 @@ LRESULT WINAPI CAsyncSelectWin32::CShadowWin::WindowProc(HWND hwnd,UINT uMsg,WPA
 	switch(uMsg)
 	{
 	case BONJOUR_EVENT:
-		SPLOGA(LOG_INFO,"BONJOUR_EVENT\n");
+		SPLOGA(LOG_INFO,"BONJOUR_EVENT");
 		CZeroconf::GetInstance()->ProcessResults();
 		break;
-    case BONJOUR_BROWSER_EVENT:
-      //CZeroconfBrowser::GetInstance()->ProcessResults();
-      break;
+	case BONJOUR_BROWSER_EVENT:
+		SPLOGA(LOG_INFO,"BONJOUR_BROWSER_EVENT");
+		CZeroconfBrowser::GetInstance()->ProcessResults();
+		break;
 	case WM_DESTROY:
 		{
 			SPLOGA(LOG_INFO,"´°¿ÚÒÑ¹Ø±Õ£¡\n");

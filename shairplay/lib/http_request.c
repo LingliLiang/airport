@@ -233,7 +233,8 @@ http_request_get_header(http_request_t *request, const char *name)
 	assert(request);
 
 	for (i=0; i<request->headers_size; i+=2) {
-		if (!strcmp(request->headers[i], name)) {
+		//if (!strcmp(request->headers[i], name)) {
+		if (!stricmp/*strcasecmp*/(request->headers[i], name)) {// no case
 			return request->headers[i+1];
 		}
 	}

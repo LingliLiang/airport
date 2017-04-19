@@ -414,14 +414,14 @@ bool CNetworkServices::StartAirPlayServer()
   std::vector<std::pair<std::string, std::string> > txt;
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
   txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
-  txt.push_back(std::make_pair("model", "Xbmc,1"));
+  txt.push_back(std::make_pair("model", "AppleTV3,2C"));
   txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
 
   // for ios8 clients we need to announce mirroring support
   // else we won't get video urls anymore.
   // We also announce photo caching support (as it seems faster and
   // we have implemented it anyways).
-  txt.push_back(std::make_pair("features", "0x20F7"));
+  txt.push_back(std::make_pair("features", "0x23F7"));
 
   CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", 
 	  g_application.getSettings().GetString(CSettings::SETTING_SERVICES_AIRPLAY_DEVICENAME).c_str(),

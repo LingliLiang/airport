@@ -28,7 +28,7 @@
 
 #include "threads/CriticalSection.h"
 #include "threads/Locks.h"
-#include "threads/Atomics.h"
+//#include "threads/Atomics.h"
 #include "log\SimpleLog.h"
 
 long CZeroconfBrowser::sm_singleton_guard = 0;
@@ -127,7 +127,7 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
   if(!smp_instance)
   {
     //use double checked locking
-    CAtomicSpinLock lock(sm_singleton_guard);
+    CSpinLock lock(sm_singleton_guard);
     if(!smp_instance)
     {
 
@@ -142,7 +142,7 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
 
 void CZeroconfBrowser::ReleaseInstance()
 {
-  CAtomicSpinLock lock(sm_singleton_guard);
+  CSpinLock lock(sm_singleton_guard);
   delete smp_instance;
   smp_instance = 0;
 }

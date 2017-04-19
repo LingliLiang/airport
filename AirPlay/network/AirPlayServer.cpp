@@ -126,7 +126,7 @@ const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
 "<key>features</key>\r\n"\
 "<integer>119</integer>\r\n"\
 "<key>model</key>\r\n"\
-"<string>Kodi,1</string>\r\n"\
+"<string>AppleTV3,2C</string>\r\n"\
 "<key>protovers</key>\r\n"\
 "<string>1.0</string>\r\n"\
 "<key>srcvers</key>\r\n"\
@@ -787,6 +787,15 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   {
     status = AIRPLAY_STATUS_SWITCHING_PROTOCOLS;
     responseHeader = "Upgrade: PTTH/1.0\r\nConnection: Upgrade\r\n";
+  }
+
+  //ios 9.3
+  else if (uri == "/pair-setup")
+  {
+	  // Ignore for now.
+  }
+  else if (uri ==  "/pair-verify")
+  {
   }
 
   // The rate command is used to play/pause media.

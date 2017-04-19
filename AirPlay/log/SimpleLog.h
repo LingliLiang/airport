@@ -378,31 +378,31 @@ namespace SimpleLOG
 		**/
 		void WriteLogBlock()
 		{
+			// enter critical section
+			TRY_LOG(m_csMutex);
+
 			int nBlock = (int)m_qLogBlock.size();
-			if(m_toOutput && nBlock)
-			{
+			if(m_toOutput && nBlock){
 				for(int peice = 0; peice < nBlock; peice++)
 				{
 					FmtLog fLog = m_qLogBlock.front();
 					WriteLog(fLog.date,GetType(fLog.type),fLog.logstring,true);
 					m_qLogBlock.pop();
 				}
-				return;
 			}
-			// enter critical section
-			TRY_LOG(m_csMutex);
-
-			//write logs
-			if(nBlock >= MAX_QUEUE_BUFFER)
-			{
-				m_fs.open(m_sLogName.c_str(), std::ios::app | std::ios::out );
-				for(int peice = 0; peice < nBlock; peice++)
+			else{
+				//write logs
+				if(nBlock >= MAX_QUEUE_BUFFER)
 				{
-					FmtLog fLog = m_qLogBlock.front();
-					WriteLog(fLog.date,GetType(fLog.type),fLog.logstring);
-					m_qLogBlock.pop();
+					m_fs.open(m_sLogName.c_str(), std::ios::app | std::ios::out );
+					for(int peice = 0; peice < nBlock; peice++)
+					{
+						FmtLog fLog = m_qLogBlock.front();
+						WriteLog(fLog.date,GetType(fLog.type),fLog.logstring);
+						m_qLogBlock.pop();
+					}
+					m_fs.close();
 				}
-				m_fs.close();
 			}
 			// leave critical section
 			TRY_END(m_csMutex);

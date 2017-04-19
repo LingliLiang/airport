@@ -1,0 +1,176 @@
+POST /pair-verify RTSP/1.0
+Dacp-Id: BA4BD1E9B53B6D87
+Active-Remote: 1361981586
+User-Agent: AirParrotW/1.2
+Content-Type: application/octet-stream
+Content-Length: 68
+CSeq: 1
+
+xMocsb9+SPRlfA
+eTv;IB}
+
+
+RTSP/1.0 200 OK
+CSeq: 1
+Content-Type: application/octet-stream
+Content-Length: 96
+
+AED> Lx" _KjOvg.QD4{Quf=P~B"9oZp
+
+
+POST /pair-verify RTSP/1.0
+Dacp-Id: BA4BD1E9B53B6D87
+Active-Remote: 1361981586
+User-Agent: AirParrotW/1.2
+Content-Type: application/octet-stream
+Content-Length: 68
+CSeq: 2
+
+zF\3bp%7b,o^dJk^97A-C,NjK
+
+
+RTSP/1.0 200 OK
+CSeq: 2
+
+POST /fp-setup RTSP/1.0
+Dacp-Id: BA4BD1E9B53B6D87
+Active-Remote: 1361981586
+User-Agent: AirParrotW/1.2
+Content-Type: application/octet-stream
+X-Apple-ET: 32
+Content-Length: 16
+CSeq: 3
+
+FPLY
+
+
+
+
+RTSP/1.0 200 OK
+Content-Type: application/octet-stream
+CSeq: 3
+Content-Length: 142
+
+FPLY$pF";*lQx|SQ_;<7'a >
+<Wa@fL|5{`/4aCa=$Mp@8|{
+
+
+
+
+POST /fp-setup RTSP/1.0
+Dacp-Id: BA4BD1E9B53B6D87
+Active-Remote: 1361981586
+User-Agent: AirParrotW/1.2
+Content-Type: application/octet-stream
+X-Apple-ET: 32
+Content-Length: 164
+CSeq: 4
+
+FPLY
+.La|bdITkt\v87%xXv%,)q.e,?]"V_WXhH?(JD- S6OFNA*Y;qE~-JAyG
+
+
+RTSP/1.0 200 OK
+Content-Type: application/octet-stream
+CSeq: 4
+Content-Length: 32
+
+FPLYY;qE~-JAyG
+
+
+GET /info RTSP/1.0
+Dacp-Id: BA4BD1E9B53B6D87
+Active-Remote: 1361981586
+User-Agent: AirParrotW/1.2
+X-Apple-ProtocolVersion: 1
+Content-Length: 0
+CSeq: 5
+
+RTSP/1.0 200 OK
+Content-Type: application/x-apple-binary-plist
+Content-Length: 803
+CSeq: 5
+Server: AirTunes/220.68
+
+bplist00"$&')+,.178!#%
+(*
+-/6-
+Xfeatures_QH-20160215WKNDTname	
+Xdisplays]widthPhysical	XrotationUwidth"<[refreshRate[widthPixels^heightPhysical8Vheight[overscanned\heightPixels\audioFormatsdTtype_audioInputFormats_audioOutputFormatse_$E5D90183-253B-40F1-9883-424728F1501BRpiRvv[statusFlags_keepAliveLowPowerV220.68]sourceVersion_@0c4c7dbe9d16f05505e974686cb5e3cd6bbf4b0f3ce76abc000f112aa803262bRpk_keepAliveSendStatsAsBody_40:8D:5C:5E:59:58XdeviceID0024553^audioLatencies_outputLatencyMicrosWdefaultYaudioType_inputLatencyMicrosZAppleTV5,3UmodelZmacAddress)2;MRTirt 57^acfht)8NV`u:Th9
+
+
+
+SETUP rtsp://192.168.139.1/14771 RTSP/1.0
+rmodel: PC1,1
+Dacp-Id: BA4BD1E9B53B6D87
+User-Agent: AirParrotW/1.2
+x-apple-device-id: 0x000c29e0ea1f
+Content-Type: application/x-apple-binary-plist
+X-Apple-ProtocolVersion: 1
+x-apple-client-name: DESKTOP-0QD5B3A
+Content-Length: 551
+CSeq: 6
+
+bplist00	
+ !"#$$%&'(WstreamsRetZtimingPort[sessionUUID^osBuildVersion]sourceVersionXdeviceIDZmacAddressTnameUmodelTekeySeivTtype_streamConnectionID]timestampInfon9	USubSu	UBePxT	UAfPxT	UBefEn	UEmEnc b_$DD0D45C3-6B69-4513-8180-A1EA4C15EFBAU13F69V280.33_AC:BC:32:D1:FF:FD[AirParrot 2\AirParrot2,6OHFPLY<3&M;y2*G-
+TWOzOv0fhiM0D0u9O#l<^!),7CR`ity#*>JW)
+
+
+
+RTSP/1.0 200 OK
+Content-Type: application/x-apple-binary-plist
+Content-Length: 120
+CSeq: 6
+Server: AirTunes/220.68
+
+bplist00	
+WstreamsnTtypeXdataPortYeventPort|ZtimingPort %(14>A:ThL
+
+
+RECORD rtsp://192.168.139.1/14771 RTSP/1.0
+Dacp-Id: BA4BD1E9B53B6D87
+Active-Remote: 1361981586
+User-Agent: AirParrotW/1.2
+X-Apple-ProtocolVersion: 1
+Content-Length: 0
+CSeq: 7
+
+RTSP/1.0 200 OK
+Audio-Latency: 0
+Server: AirTunes/220.68
+CSeq: 7
+
+GET /info RTSP/1.0
+Dacp-Id: BA4BD1E9B53B6D87
+Active-Remote: 1361981586
+User-Agent: AirParrotW/1.2
+X-Apple-ProtocolVersion: 1
+Content-Length: 0
+CSeq: 8
+
+RTSP/1.0 200 OK
+Content-Type: application/x-apple-binary-plist
+Content-Length: 803
+CSeq: 8
+Server: AirTunes/220.68
+
+bplist00"$&')+,.178!#%
+(*
+-/6-
+Xfeatures_QH-20160215WKNDTname	
+Xdisplays]widthPhysical	XrotationUwidth"<[refreshRate[widthPixels^heightPhysical8Vheight[overscanned\heightPixels\audioFormatsdTtype_audioInputFormats_audioOutputFormatse_$E5D90183-253B-40F1-9883-424728F1501BRpiRvv[statusFlags_keepAliveLowPowerV220.68]sourceVersion_@0c4c7dbe9d16f05505e974686cb5e3cd6bbf4b0f3ce76abc000f112aa803262bRpk_keepAliveSendStatsAsBody_40:8D:5C:5E:59:58XdeviceID0024553^audioLatencies_outputLatencyMicrosWdefaultYaudioType_inputLatencyMicrosZAppleTV5,3UmodelZmacAddress)2;MRTirt 57^acfht)8NV`u:Th9
+
+POST /feedback RTSP/1.0
+Dacp-Id: BA4BD1E9B53B6D87
+Active-Remote: 1361981586
+User-Agent: AirParrotW/1.2
+Content-Length: 0
+CSeq: 9
+
+RTSP/1.0 200 OK
+Server: AirTunes/220.68
+Content-Length: 0
+
+
+_airplay_tcplocal_raop_googlecastQH-20160215WKND%408D5C5E5958@QH-20160215WKND%1QH-20160215WKND1
+

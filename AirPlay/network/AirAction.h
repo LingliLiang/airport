@@ -18,7 +18,17 @@ public:
   CAction(int actionID, const std::string &name);
 
   CAction(const CAction& other) { *this = other; }
-  CAction& operator=(const CAction& rhs);
+  CAction& CAction::operator=(const CAction& rhs)
+  {
+	  if (this != &rhs)
+	  {
+		  m_id = rhs.m_id;
+		  m_name = rhs.m_name;
+		  m_text = rhs.m_text;
+	  }
+	  return *this;
+  }
+
 
   /*! \brief Identifier of the action
    \return id of the action

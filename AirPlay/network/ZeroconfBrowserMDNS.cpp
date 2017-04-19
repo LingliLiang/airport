@@ -31,6 +31,39 @@
 extern HWND g_hWnd;
 
 
+
+static bool DNSLookup(const std::string& strHostName, std::string& strIpAddress)
+{
+  if (strHostName.empty() && strIpAddress.empty())
+    return false;
+
+  // first see if this is already an ip address
+  unsigned long address = inet_addr(strHostName.c_str());
+  strIpAddress.clear();
+
+  if (address != INADDR_NONE)
+  {
+    strIpAddress = StrConversion::StrFormat("%lu.%lu.%lu.%lu", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
+    return true;
+  }
+
+  // perform dns lookup
+  struct hostent *host = gethostbyname(strHostName.c_str());
+  if (host && host->h_addr_list[0])
+  {
+    strIpAddress = StrConversion::StrFormat("%d.%d.%d.%d",
+                                       (unsigned char)host->h_addr_list[0][0],
+                                       (unsigned char)host->h_addr_list[0][1],
+                                       (unsigned char)host->h_addr_list[0][2],
+                                       (unsigned char)host->h_addr_list[0][3]);
+    return true;
+  }
+
+  SPLOGAN(LOG_ERROR, "Unable to lookup host: '%s'", strHostName.c_str());
+  return false;
+}
+
+
 CZeroconfBrowserMDNS::CZeroconfBrowserMDNS()
 {
   m_browser = NULL;
@@ -81,10 +114,10 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
     }
     if(! (flags & kDNSServiceFlagsMoreComing) )
     {
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-      message.SetStringParam("zeroconf://");
-      g_windowManager.SendThreadMessage(message);
-      SPLOGAN(LOG_DEBUG, "ZeroconfBrowserMDNS::BrowserCallback sent gui update for path zeroconf://");
+      //CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+      //message.SetStringParam("zeroconf://");
+      //g_windowManager.SendThreadMessage(message);
+      SPLOGA(LOG_DEBUG, "ZeroconfBrowserMDNS::BrowserCallback sent gui update for path zeroconf://");
     }
   }
   else
@@ -379,7 +412,7 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
     if (fr_service.GetIP().empty())
     {
       SPLOGAN(LOG_WARNING, "ZeroconfBrowserMDNS: Could not resolve hostname %s falling back to CDNSNameCache", fr_service.GetHostname().c_str());
-      if (CDNSNameCache::Lookup(fr_service.GetHostname(), strIP))
+      if (DNSLookup(fr_service.GetHostname(), strIP))
         fr_service.SetIP(strIP);
       else
         SPLOGAN(LOG_ERROR, "ZeroconfBrowserMDNS: Could not resolve hostname %s", fr_service.GetHostname().c_str());
