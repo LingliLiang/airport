@@ -15,20 +15,37 @@ extern HWND g_hWnd;
 
 CAsyncSelectWin32::CAsyncSelectWin32()
 {
+}
+
+void CAsyncSelectWin32::Start()
+{
 	CShadowWin* p = new CShadowWin;
 	CShadowWin::PostJob(p);
 	m_sWinId = p->GetTId();
 }
 
-void CAsyncSelectWin32::Close()
+
+void CAsyncSelectWin32::Stop()
 {
-	::PostMessage(g_hWnd,WM_CLOSE,0,0);
+	::PostMessage(m_wnd[0],WM_CLOSE,0,0);
+	::PostMessage(m_wnd[1],WM_CLOSE,0,0);
 }
 
+HWND CAsyncSelectWin32::m_wnd[2] = {0,0};
 
-map<SOCKET,char*> g_map;
+int CAsyncSelectWin32::CShadowWin::wnd_count = 0;
+
 LRESULT WINAPI CAsyncSelectWin32::CShadowWin::WindowProc(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
+	if(hwnd == CAsyncSelectWin32::m_wnd[0])
+	{
+		SPLOGA(LOG_INFO,"wnd  of BONJOUR_EVENT");
+	}
+	else if(hwnd == CAsyncSelectWin32::m_wnd[1])
+	{
+		SPLOGA(LOG_INFO,"wnd  of   BONJOUR_BROWSER_EVENT");
+	}
+
 	switch(uMsg)
 	{
 	case BONJOUR_EVENT:
@@ -41,8 +58,12 @@ LRESULT WINAPI CAsyncSelectWin32::CShadowWin::WindowProc(HWND hwnd,UINT uMsg,WPA
 		break;
 	case WM_DESTROY:
 		{
-			SPLOGA(LOG_INFO,"´°¿ÚÒÑ¹Ø±Õ£¡\n");
-			::PostThreadMessage(::GetCurrentThreadId(),WM_QUIT,0,0);
+			SPLOGA(LOG_INFO,"window close !\n");
+			if((--wnd_count)<=0)
+				::PostThreadMessage(::GetCurrentThreadId(),WM_QUIT,0,0);
+		}
+	case WM_CREATE:
+		{
 		}
 	}
 	return DefWindowProc(hwnd,uMsg,wParam,lParam);
@@ -76,11 +97,23 @@ bool CAsyncSelectWin32::CShadowWin::DoWork()
 		CW_USEDEFAULT,CW_USEDEFAULT,HWND_MESSAGE,NULL,NULL,NULL);
 	if(hwnd == NULL)
 	{
-		SPLOGAN(LOG_INFO,"WSAAsyncSelect Shadow CreateWindowEx failed - %d",GetLastError());
+		SPLOGAN(LOG_INFO,"WSAAsyncSelect AirPlay CreateWindowEx failed - %d",GetLastError());
 		return false;
 	}
-	g_hWnd = hwnd;
+	wnd_count++;
+	CAsyncSelectWin32::m_wnd[0] = hwnd;
 
+	 hwnd = CreateWindowEx(0,(TCHAR *)atom,_T(""),WS_OVERLAPPEDWINDOW,CW_USEDEFAULT,CW_USEDEFAULT,
+		CW_USEDEFAULT,CW_USEDEFAULT,HWND_MESSAGE,NULL,NULL,NULL);
+
+	if(hwnd == NULL)
+	{
+		SPLOGAN(LOG_INFO,"WSAAsyncSelect AirTunes CreateWindowEx failed - %d",GetLastError());
+		return false;
+	}
+	wnd_count++;
+	CAsyncSelectWin32::m_wnd[1] = hwnd;
+		
 	MSG msg;
 	while(GetMessage(&msg,NULL,0,0))
 	{

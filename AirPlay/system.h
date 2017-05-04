@@ -4,7 +4,10 @@
 #if _MSC_VER < 1700
 #define USE_SYS_INTTYPES
 #endif
-#define HAS_AIRTUNES
+
+#define HAVE_STDINT_H
+
+//#define HAS_AIRTUNES
 #define HAS_AIRPLAY
 
 #define HAS_MDNS
@@ -28,4 +31,4 @@
 #include "sys\socket.h"
 
 #define BONJOUR_EVENT             ( WM_USER + 0x100 )	// Message sent to the Window when a Bonjour event occurs.
-#define BONJOUR_BROWSER_EVENT     ( WM_USER + 0x110 )
+#define BONJOUR_BROWSER_EVENT     ( WM_USER + 0x101 )

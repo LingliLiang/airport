@@ -17,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include "stdafx.h"
 #include "system.h"
 
 #include "ZeroconfBrowserMDNS.h"
@@ -25,10 +27,9 @@
 
 #include "threads/Locks.h"
 #include "log\SimpleLog.h"
+#include "AirPlay.h"
 
 #pragma comment(lib, "dnssd.lib")
-
-extern HWND g_hWnd;
 
 
 
@@ -77,7 +78,7 @@ CZeroconfBrowserMDNS::~CZeroconfBrowserMDNS()
     doRemoveServiceType(it->first);
 
 #if defined(TARGET_WINDOWS)
-  WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_hWnd, BONJOUR_BROWSER_EVENT, 0 );
+  WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_application.getAirTunesWnd(), BONJOUR_BROWSER_EVENT, 0 );
 #endif //TARGET_WINDOWS
 
   if (m_browser)
@@ -264,7 +265,7 @@ bool CZeroconfBrowserMDNS::doAddServiceType(const std::string& fcr_service_type)
       return false;
     }
 #if defined(TARGET_WINDOWS)
-    err = WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_hWnd, BONJOUR_BROWSER_EVENT, FD_READ | FD_CLOSE );
+	err = WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_application.getAirTunesWnd(), BONJOUR_BROWSER_EVENT, FD_READ | FD_CLOSE );
     if (err != kDNSServiceErr_NoError)
       SPLOGAN(LOG_ERROR, "ZeroconfBrowserMDNS: WSAAsyncSelect failed with error = %ld", (int) err);
 #endif //TARGET_WINDOWS

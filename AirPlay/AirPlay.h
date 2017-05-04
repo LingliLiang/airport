@@ -6,6 +6,30 @@
 #include <map>
 //template class AIRPLAY_API std::map< unsigned int , std::string>; 
 
+namespace FeaturesKey
+{
+	// AirPlay
+	extern const char* FAP_Model;
+	extern const char* FAP_Features;
+	extern const char* FAP_Srcvers;
+	extern const char* FAP_Flags;
+	//AirTunes
+	extern const char* FAT_am;
+	extern const char* FAT_cn;
+	extern const char* FAT_da;
+	extern const char* FAT_et;
+	extern const char* FAT_ft;
+	extern const char* FAT_md;
+	extern const char* FAT_pk;
+	extern const char* FAT_sf;
+	extern const char* FAT_tp;
+	extern const char* FAT_vn;
+	extern const char* FAT_vs;
+	extern const char* FAT_vv;
+}
+using namespace FeaturesKey;
+class CAirFeatures;
+
 class CSettings
 {
 public:
@@ -49,12 +73,14 @@ public:
 
 	CNetwork& getNetwork();
 	CSettings& getSettings();
-	
+	const char* getFeatures(const char* name);
+	HWND getAirPlayWnd();
+	HWND getAirTunesWnd();
 private:
 	class CAsyncSelectWin32* m_msgwin;
 	CSettings* m_settings;
 	CNetwork* m_network;
-
+	CAirFeatures* m_features;
 	struct tAirplaySetting
 	{
 		bool volumeControl;

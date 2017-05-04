@@ -385,8 +385,6 @@ void CNetworkServices::Stop(bool bWait)
   {
     StopZeroconf();
   }
-
-  StopEventServer(bWait, false);
   StopAirPlayServer(bWait);
   StopAirTunesServer(bWait);
 }
@@ -414,14 +412,14 @@ bool CNetworkServices::StartAirPlayServer()
   std::vector<std::pair<std::string, std::string> > txt;
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
   txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
-  txt.push_back(std::make_pair("model", "AppleTV3,2C"));
-  txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
+  txt.push_back(std::make_pair(FAP_Model, g_application.getFeatures(FAP_Model)));
+  txt.push_back(std::make_pair(FAP_Srcvers, g_application.getFeatures(FAP_Srcvers)));
 
   // for ios8 clients we need to announce mirroring support
   // else we won't get video urls anymore.
   // We also announce photo caching support (as it seems faster and
   // we have implemented it anyways).
-  txt.push_back(std::make_pair("features", "0x23F7"));
+  txt.push_back(std::make_pair(FAP_Features, g_application.getFeatures(FAP_Features)));
 
   CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", 
 	  g_application.getSettings().GetString(CSettings::SETTING_SERVICES_AIRPLAY_DEVICENAME).c_str(),
@@ -497,93 +495,6 @@ bool CNetworkServices::StopAirTunesServer(bool bWait)
   CAirTunesServer::StopServer(bWait);
   return true;
 #endif // HAS_AIRTUNES
-  return false;
-}
-
-bool CNetworkServices::StartEventServer()
-{
-#ifdef HAS_EVENT_SERVER
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
-    return false;
-
-  if (IsEventServerRunning())
-    return true;
-
-  CEventServer* server = CEventServer::GetInstance();
-  if (!server)
-  {
-    SPLOGAN(LOGERROR, "ES: Out of memory");
-    return false;
-  }
-
-  server->StartServer();
-
-  return true;
-#endif // HAS_EVENT_SERVER
-  return false;
-}
-
-bool CNetworkServices::IsEventServerRunning()
-{
-#ifdef HAS_EVENT_SERVER
-  return CEventServer::GetInstance()->Running();
-#endif // HAS_EVENT_SERVER
-  return false;
-}
-
-bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
-{
-#ifdef HAS_EVENT_SERVER
-  if (!IsEventServerRunning())
-    return true;
-
-  CEventServer* server = CEventServer::GetInstance();
-  if (!server)
-  {
-    SPLOGAN(LOGERROR, "ES: Out of memory");
-    return false;
-  }
-
-  if (promptuser)
-  {
-    if (server->GetNumberOfClients() > 0)
-    {
-      if (HELPERS::ShowYesNoDialogText(CVariant{13140}, CVariant{13141}, CVariant{""}, CVariant{""}, 10000) != 
-        DialogResponse::YES)
-      {
-        SPLOGAN(LOGNOTICE, "ES: Not stopping event server");
-        return false;
-      }
-    }
-    SPLOGAN(LOGNOTICE, "ES: Stopping event server with confirmation");
-
-    CEventServer::GetInstance()->StopServer(true);
-  }
-  else
-  {
-    if (!bWait)
-      SPLOGAN(LOGNOTICE, "ES: Stopping event server");
-
-    CEventServer::GetInstance()->StopServer(bWait);
-  }
-
-  return true;
-#endif // HAS_EVENT_SERVER
-  return false;
-}
-
-bool CNetworkServices::RefreshEventServer()
-{
-#ifdef HAS_EVENT_SERVER
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
-    return false;
-
-  if (!IsEventServerRunning())
-    return false;
-
-  CEventServer::GetInstance()->RefreshSettings();
-  return true;
-#endif // HAS_EVENT_SERVER
   return false;
 }
 

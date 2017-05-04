@@ -32,6 +32,9 @@
     <Filter Include="dllLoader">
       <UniqueIdentifier>{7c05246b-782e-482e-bca8-18ad9354fce3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\fairplay">
+      <UniqueIdentifier>{6c4134b1-34c6-440b-8d5b-16453f18f6ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AirDefines.h">
@@ -174,6 +177,9 @@
     </ClInclude>
     <ClInclude Include="network\ZeroconfBrowserMDNS.h">
       <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\fairplay.h">
+      <Filter>network\fairplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

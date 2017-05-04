@@ -41,11 +41,6 @@ public:
   bool IsAirTunesServerRunning();
   bool StopAirTunesServer(bool bWait);
 
-  bool StartEventServer();
-  bool IsEventServerRunning();
-  bool StopEventServer(bool bWait, bool promptuser);
-  bool RefreshEventServer();
-
   bool StartZeroconf();
   bool IsZeroconfRunning();
   bool StopZeroconf();

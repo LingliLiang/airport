@@ -21,6 +21,7 @@
  */
 
 #include "stdafx.h"
+
 #include "AirPlay.h"
 #include "network/Network.h"
 #include "AirPlayServer.h"
@@ -40,6 +41,9 @@
 #endif // HAS_ZEROCONF
 
 #include "log/SimpleLog.h"
+
+#include <plist\plist.h>
+#include "fairplay.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -68,6 +72,20 @@ int CAirPlayServer::m_isPlaying = 0;
 #define EVENT_LOADING   2
 #define EVENT_STOPPED   3
 const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
+
+#define STREAM_INFO  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"\
+"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r\n"\
+"<plist version=\"1.0\">\r\n"\
+"<dict>\r\n"\
+"<key>width</key>\r\n"\
+"<integer>1280</integer>\r\n"\
+"<key>height</key>\r\n"\
+"<integer>720</integer>\r\n"\
+"<key>version</key>\r\n"\
+"<string>110.92</string>\r\n"\
+"</dict>\r\n"\
+"</plist>\r\n"
+
 
 #define PLAYBACK_INFO  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"\
 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r\n"\
@@ -430,7 +448,7 @@ void CAirPlayServer::Process()
     // we fix issues where xbmc is detected
     // as audio-only target on devices with
     // ios7 and later
-    handleZeroconfAnnouncement();    
+    //handleZeroconfAnnouncement();    
   }
 
   Deinitialize();
@@ -789,13 +807,61 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     responseHeader = "Upgrade: PTTH/1.0\r\nConnection: Upgrade\r\n";
   }
 
-  //ios 9.3
+
+  //Screen Mirroring
+  else if (uri == "/stream.xml")
+  {
+	  SPLOGAN(LOG_INFO, "AIRPLAY: got request %s", uri);
+	  responseBody = STREAM_INFO;//StrConversion::StrFormat(STREAM_INFO, );
+	  responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
+  }
+  else if (uri == "/stream")
+  {
+	  const char *plist_bin = NULL;
+	  char *xml = NULL;
+	 unsigned int size = 0;
+	  int type = 0;
+	  plist_t root = NULL;
+
+	  plist_bin = body.c_str();
+	  //plist_from_bin(plist_bin, size, &root);
+	  if (root) { 
+		 // plist_to_xml(root, &xml, &size);
+		  /* TODO: in this plist, we will get param1&param2, which is the 
+		  encoded aeskey & aesiv */
+		  if (xml) fprintf(stderr, "%s\n", xml);
+		  /* after /stream, this connection will no longer a http session */ 
+		  //httpd_set_mirror_streaming(conn->airplay->mirror_server);//rtp server??
+		status = AIRPLAY_STATUS_NO_RESPONSE_NEEDED;
+	  } else {
+		  SPLOGA(LOG_INFO, "AIRPLAY: Invalid bplist");
+		  status = AIRPLAY_STATUS_NOT_FOUND;
+	  }
+  }
+
+  ///fp-setup challenge
+  else if (uri == "/fp-setup")
+  {
+	  const unsigned char *data = (const unsigned char*)body.c_str();
+	  int datalen = 0,size = 0;
+	  char *buf = 0;
+	  datalen = body.length();
+
+	  //buf = (char *)fairplay_query((datalen==16?1:2), data, datalen, &size);
+
+	  if (buf) {
+		  responseBody = buf;
+		  responseHeader = "Content-Type: application/octet-stream\r\n";
+	  }
+  }  
   else if (uri == "/pair-setup")
   {
+	  SPLOGAN(LOG_DEBUG, "/pair-setup %s ", body.c_str());
 	  // Ignore for now.
   }
   else if (uri ==  "/pair-verify")
   {
+	  SPLOGAN(LOG_DEBUG, "/pair-verify %s ", body.c_str());
   }
 
   // The rate command is used to play/pause media.
@@ -1185,11 +1251,6 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   {
     status = AIRPLAY_STATUS_NOT_FOUND;
   }
-
-  else if (uri == "/fp-setup")
-  {
-    status = AIRPLAY_STATUS_PRECONDITION_FAILED;
-  }  
 
   else if (uri == "200") //response OK from the event reverse message
   {

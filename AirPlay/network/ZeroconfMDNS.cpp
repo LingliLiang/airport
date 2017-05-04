@@ -17,9 +17,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
+#include "stdafx.h"
 #include "ZeroconfMDNS.h"
 //#include <arpa/inet.h>
+#include "AirPlay.h"
 
 #include <string>
 #include <sstream>
@@ -80,7 +81,7 @@ bool CZeroconfMDNS::doPublishService(const std::string& fcr_identifier,
       SPLOGAN(LOG_ERROR, "ZeroconfMDNS: DNSServiceCreateConnection failed with error = %ld", (int) err);
       return false;
     }
-    err = WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_service ), g_hWnd, BONJOUR_EVENT, FD_READ | FD_CLOSE );
+	err = WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_service ), g_application.getAirPlayWnd(), BONJOUR_EVENT, FD_READ | FD_CLOSE );
     if (err != kDNSServiceErr_NoError)
      SPLOGAN(LOG_ERROR, "ZeroconfMDNS: WSAAsyncSelect failed with error = %ld", (int) err);
   }
@@ -179,7 +180,7 @@ void CZeroconfMDNS::doStop()
   {
     CSingleLock lock(m_data_guard);
 #if defined(TARGET_WINDOWS)
-    WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_service ), g_hWnd, BONJOUR_EVENT, 0 );
+	WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_service ), g_application.getAirPlayWnd() , BONJOUR_EVENT, 0 );
 #endif //TARGET_WINDOWS
 
     if (m_service)
